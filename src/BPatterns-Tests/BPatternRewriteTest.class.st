@@ -66,7 +66,16 @@ BPatternRewriteTest >> rewriteMethod: aSelector by: aBPatternRewriteBlock with: 
 ]
 
 { #category : 'tests' }
-BPatternRewriteTest >> testCreationFromBlock [ 
+BPatternRewriteTest >> testDisplayString [
+
+	| actual a b |
+	brewrite := [[ a someMessage: b ]  -> [ b someMessage: a ]] brewrite.
+	actual := brewrite displayString.
+	self assert: actual equals: '[ a someMessage: b ] -> [ b someMessage: a ]'
+]
+
+{ #category : 'tests' }
+BPatternRewriteTest >> testFromBlockWithDefaultVarPattern [ 
 
 	| block searchBlock rewriteBlock any |
 	block := [[ any isNil ifFalse: [ any printString ]] -> [ any ifNotNil: [ any printString ]]].

@@ -1,3 +1,14 @@
+"
+I am a root of a hierarchy of pattern config classes.
+Configs are used to convert the regular AST nodes into the pattern.
+Subclasses should implement #isForNode: method to define which kind of nodes they should be used for.
+The actual convertion logic is implemented in #applyForNode method.
+
+Instances of my subclasses can be created with an optional parameter #nodeConfigBlock to modify a state of the corresponding pattern nodes adjusting the filter behaviour.
+
+Normally config instances are created together with #bpattern and #brewrite messages using an extra #with: DSL message. See the package comment for the full details about the pattern configuration.
+
+"
 Class {
 	#name : 'BPatternConfig',
 	#superclass : 'Object',

@@ -121,7 +121,17 @@ BPatternTest >> testCopy [
 ]
 
 { #category : 'tests' }
-BPatternTest >> testCreationFromBMethodShouldNotModifyOriginalMethodAST [
+BPatternTest >> testDisplayString [
+
+	| actual pattern anyRcv anyArg |
+	pattern := [ anyRcv someMessage: anyArg ] bpattern.
+	actual := pattern displayString.
+	
+	self assert: actual equals: 'anyRcv someMessage: anyArg'
+]
+
+{ #category : 'tests' }
+BPatternTest >> testFromBMethodShouldNotModifyOriginalASTOfMethod [
 	| block anyBody |
 	block := [[ self anyMethod ] -> [ anyBody ]].
 	block bmethod.
@@ -132,53 +142,18 @@ BPatternTest >> testCreationFromBMethodShouldNotModifyOriginalMethodAST [
 ]
 
 { #category : 'tests' }
-BPatternTest >> testCreationFromBMethodWithAnyKeywordPattern [
-	| actual allVarNodes patternVarNodes anyArg anyArg2 |
-	actual := [[ self anyMessage: anyArg nonPatternPart: anyArg2 ] -> [ ^anyArg printString ]] bmethod.
-	
-	self assert: actual class equals: BPattern.
-	self assert: actual patternAST class equals: BPatternMethodNode.
-	self assert: actual patternAST patternKeywords asArray equals: #('anyMessage:').
-	self assert: actual patternAST selector equals: #anyMessage:nonPatternPart:.
-	self assert: actual patternAST argumentNames equals: #('anyArg' 'anyArg2').
-	self assert: actual patternAST body class equals: OCSequenceNode.
-	allVarNodes :=  actual patternAST variableNodes.
-	patternVarNodes := allVarNodes select: [:each | #('anyArg' 'anyArg2') includes: each name ].
-	self assert: patternVarNodes notEmpty.
-	patternVarNodes do: [:each | 
-		self assert: each isPatternNode.
-	]
-]
-
-{ #category : 'tests' }
-BPatternTest >> testCreationFromBMethodWithAnyUnarySelectorPattern [
-	| actual |
-	actual := [ [ self anyMessage ] -> [ super anyMessage ]] bmethod. 
-	
-	self assert: actual class equals: BPattern.
-	self assert: actual patternAST class equals: BPatternMethodNode.
-	self assert: actual patternAST patternKeywords asArray equals: #('anyMessage').
-	self assert: actual patternAST selector equals: #anyMessage.
-	self assert: actual patternAST isSelectorList.
-	self assert: actual patternAST body sendNodes first selector equals: #anyMessage.
-	self assert: actual patternAST body sendNodes first isPatternNode.
-	self assert: actual patternAST patternKeywords asArray equals: #('anyMessage').
-	self assert: actual patternAST body sendNodes first isSelectorList.	
-]
-
-{ #category : 'tests' }
-BPatternTest >> testCreationFromBMethodWithConfiguredKeywordPatterns [
-	| actual allVarNodes patternVarNodes anyArg anyArg2 |
-	actual := [[ self patternPart: anyArg nonPatternPart: anyArg2 ] -> [ ^anyArg printString ]] 
+BPatternTest >> testFromBMethodWithConfiguredKeywordPattern [
+	| bpattern allVarNodes patternVarNodes anyArg anyArg2 |
+	bpattern := [[ self patternPart: anyArg nonPatternPart: anyArg2 ] -> [ ^anyArg printString ]] 
 					bmethod with: #patternPart:.
 	
-	self assert: actual class equals: BPattern.
-	self assert: actual patternAST class equals: BPatternMethodNode.
-	self assert: actual patternAST patternKeywords asArray equals: #(#patternPart:).
-	self assert: actual patternAST selector equals: #patternPart:nonPatternPart:.
-	self assert: actual patternAST argumentNames equals: #('anyArg' 'anyArg2').
-	self assert: actual patternAST body class equals: OCSequenceNode.
-	allVarNodes :=  actual patternAST variableNodes.
+	self assert: bpattern class equals: BPattern.
+	self assert: bpattern patternAST class equals: BPatternMethodNode.
+	self assert: bpattern patternAST patternKeywords asArray equals: #(#patternPart:).
+	self assert: bpattern patternAST selector equals: #patternPart:nonPatternPart:.
+	self assert: bpattern patternAST argumentNames equals: #('anyArg' 'anyArg2').
+	self assert: bpattern patternAST body class equals: OCSequenceNode.
+	allVarNodes :=  bpattern patternAST variableNodes.
 	patternVarNodes := allVarNodes select: [:each | #('anyArg' 'anyArg2') includes: each name ].
 	self assert: patternVarNodes notEmpty.
 	patternVarNodes do: [:each | 
@@ -187,64 +162,99 @@ BPatternTest >> testCreationFromBMethodWithConfiguredKeywordPatterns [
 ]
 
 { #category : 'tests' }
-BPatternTest >> testCreationFromBMethodWithConfiguredUnarySelectorPattern [
-	| actual |
-	actual := [[ self someMessage ] -> [ super someMessage ]] bmethod with: #someMessage.
+BPatternTest >> testFromBMethodWithConfiguredUnarySelectorPattern [
+	| bpattern |
+	bpattern := [[ self someMessage ] -> [ super someMessage ]] bmethod with: #someMessage.
 	
-	self assert: actual class equals: BPattern.
-	self assert: actual patternAST class equals: BPatternMethodNode.
-	self assert: actual patternAST patternKeywords asArray equals: #('someMessage').
-	self assert: actual patternAST selector equals: #someMessage.
-	self assert: actual patternAST isSelectorList.
-	self assert: actual patternAST body sendNodes first selector equals: #someMessage.
-	self assert: actual patternAST body sendNodes first isPatternNode.
-	self assert: actual patternAST patternKeywords asArray equals: #('someMessage').
-	self assert: actual patternAST body sendNodes first isSelectorList.	
+	self assert: bpattern class equals: BPattern.
+	self assert: bpattern patternAST class equals: BPatternMethodNode.
+	self assert: bpattern patternAST patternKeywords asArray equals: #('someMessage').
+	self assert: bpattern patternAST selector equals: #someMessage.
+	self assert: bpattern patternAST isSelectorList.
+	self assert: bpattern patternAST body sendNodes first selector equals: #someMessage.
+	self assert: bpattern patternAST body sendNodes first isPatternNode.
+	self assert: bpattern patternAST patternKeywords asArray equals: #('someMessage').
+	self assert: bpattern patternAST body sendNodes first isSelectorList.	
 ]
 
 { #category : 'tests' }
-BPatternTest >> testCreationFromBMethodWithConfiguredUnarySelectorPatternInNonListMode [
-	| actual |
-	actual := [[ self someMessage ] -> [ super someMessage ]] bmethod
+BPatternTest >> testFromBMethodWithConfiguredUnarySelectorPatternInNonListMode [
+	| bpattern |
+	bpattern := [[ self someMessage ] -> [ super someMessage ]] bmethod
 					with: #someMessage -> [:pattern | pattern beUnary ].
 	
-	self assert: actual class equals: BPattern.
-	self assert: actual patternAST class equals: BPatternMethodNode.
-	self assert: actual patternAST patternKeywords asArray equals: #('someMessage').
-	self assert: actual patternAST selector equals: #someMessage.
-	self deny: actual patternAST isSelectorList.
-	self assert: actual patternAST body sendNodes first selector equals: #someMessage.
-	self assert: actual patternAST body sendNodes first isPatternNode.
-	self assert: actual patternAST patternKeywords asArray equals: #('someMessage').
-	self deny: actual patternAST body sendNodes first isSelectorList.	
+	self assert: bpattern class equals: BPattern.
+	self assert: bpattern patternAST class equals: BPatternMethodNode.
+	self assert: bpattern patternAST patternKeywords asArray equals: #('someMessage').
+	self assert: bpattern patternAST selector equals: #someMessage.
+	self deny: bpattern patternAST isSelectorList.
+	self assert: bpattern patternAST body sendNodes first selector equals: #someMessage.
+	self assert: bpattern patternAST body sendNodes first isPatternNode.
+	self assert: bpattern patternAST patternKeywords asArray equals: #('someMessage').
+	self deny: bpattern patternAST body sendNodes first isSelectorList.	
 ]
 
 { #category : 'tests' }
-BPatternTest >> testCreationFromBMethodWithMultipleStatements [
-	| actual arg stmps |
-	actual := [[ self someMessage: arg ] -> [ stmps.  ^arg printString ]] bmethod.
+BPatternTest >> testFromBMethodWithDefaultKeywordPattern [
+	| bpattern allVarNodes patternVarNodes anyArg anyArg2 |
+	bpattern := [[ self anyMessage: anyArg nonPatternPart: anyArg2 ] -> [ ^anyArg printString ]] bmethod.
 	
-	self assert: actual class equals: BPattern.
-	self assert: actual patternAST body class equals: OCSequenceNode.
-	self assert: actual patternAST body statements size equals: 2.
+	self assert: bpattern class equals: BPattern.
+	self assert: bpattern patternAST class equals: BPatternMethodNode.
+	self assert: bpattern patternAST patternKeywords asArray equals: #('anyMessage:').
+	self assert: bpattern patternAST selector equals: #anyMessage:nonPatternPart:.
+	self assert: bpattern patternAST argumentNames equals: #('anyArg' 'anyArg2').
+	self assert: bpattern patternAST body class equals: OCSequenceNode.
+	allVarNodes :=  bpattern patternAST variableNodes.
+	patternVarNodes := allVarNodes select: [:each | #('anyArg' 'anyArg2') includes: each name ].
+	self assert: patternVarNodes notEmpty.
+	patternVarNodes do: [:each | 
+		self assert: each isPatternNode.
+	]
 ]
 
 { #category : 'tests' }
-BPatternTest >> testCreationFromBMethodWithoutSelectorPatterns [
-	| actual block allVarNodes patternVarNodes anyArg |
-	actual := [ [ self someMessage: anyArg ] -> [ ^anyArg printString ]] bmethod. 
+BPatternTest >> testFromBMethodWithDefaultUnarySelectorPattern [
+	| bpattern |
+	bpattern := [ [ self anyMessage ] -> [ super anyMessage ]] bmethod. 
 	
-	self assert: actual class equals: BPattern.
-	self assert: actual patternAST class equals: BPatternMethodNode.
-	self deny: actual patternAST isSelectorList.
-	self assert: actual patternAST patternKeywords isEmpty.
-	self assert: actual patternAST selector equals: #someMessage:.
-	self assert: actual patternAST argumentNames equals: #('anyArg').
-	self assert: actual patternAST body temporaries size equals: 1.
-	self assert: actual patternAST body temporaries first isPatternNode.
-	self assert: actual patternAST body temporaries first isList.
-	self assert: actual patternAST body class equals: OCSequenceNode.
-	allVarNodes :=  actual patternAST variableNodes.
+	self assert: bpattern class equals: BPattern.
+	self assert: bpattern patternAST class equals: BPatternMethodNode.
+	self assert: bpattern patternAST patternKeywords asArray equals: #('anyMessage').
+	self assert: bpattern patternAST selector equals: #anyMessage.
+	self assert: bpattern patternAST isSelectorList.
+	self assert: bpattern patternAST body sendNodes first selector equals: #anyMessage.
+	self assert: bpattern patternAST body sendNodes first isPatternNode.
+	self assert: bpattern patternAST patternKeywords asArray equals: #('anyMessage').
+	self assert: bpattern patternAST body sendNodes first isSelectorList.	
+]
+
+{ #category : 'tests' }
+BPatternTest >> testFromBMethodWithMultipleStatements [
+	| bpattern arg stmps |
+	bpattern := [[ self someMessage: arg ] -> [ stmps.  ^arg printString ]] bmethod.
+	
+	self assert: bpattern class equals: BPattern.
+	self assert: bpattern patternAST body class equals: OCSequenceNode.
+	self assert: bpattern patternAST body statements size equals: 2.
+]
+
+{ #category : 'tests' }
+BPatternTest >> testFromBMethodWithoutSelectorPatterns [
+	| bpattern allVarNodes patternVarNodes anyArg |
+	bpattern := [ [ self someMessage: anyArg ] -> [ ^anyArg printString ]] bmethod. 
+	
+	self assert: bpattern class equals: BPattern.
+	self assert: bpattern patternAST class equals: BPatternMethodNode.
+	self deny: bpattern patternAST isSelectorList.
+	self assert: bpattern patternAST patternKeywords isEmpty.
+	self assert: bpattern patternAST selector equals: #someMessage:.
+	self assert: bpattern patternAST argumentNames equals: #('anyArg').
+	self assert: bpattern patternAST body temporaries size equals: 1.
+	self assert: bpattern patternAST body temporaries first isPatternNode.
+	self assert: bpattern patternAST body temporaries first isList.
+	self assert: bpattern patternAST body class equals: OCSequenceNode.
+	allVarNodes :=  bpattern patternAST variableNodes.
 	patternVarNodes := allVarNodes select: [:each | each name = 'anyArg' ].
 	self assert: patternVarNodes notEmpty.
 	patternVarNodes do: [:each | 
@@ -253,15 +263,100 @@ BPatternTest >> testCreationFromBMethodWithoutSelectorPatterns [
 ]
 
 { #category : 'tests' }
-BPatternTest >> testCreationFromBlock [ 
+BPatternTest >> testFromBlockShouldNotModifyOriginalASTOfMethod [
 
-	| actual block allVarNodes patternVarNodes any |
-	block := [| nonPatternTemp | nonPatternTemp := any isNil ifFalse: [ any printString ]].
-	actual := block bpattern.
+	| block any |
+	block := [ any ].
+	block bpattern.
 	
-	self assert: actual class equals: BPattern.
-	self assert: actual patternAST sourceCode equals: block sourceNode body sourceCode.
-	allVarNodes :=  actual patternAST variableNodes.
+	block sourceNode variableNodes do: [:each | 
+		self deny: each isPatternNode "original AST was not modified"
+	]
+]
+
+{ #category : 'tests' }
+BPatternTest >> testFromBlockWithCascadeMessages [
+
+	| bpattern allVarNodes patternVarNodes any |
+	bpattern := [ any printString; asString] bpattern.
+	
+	self assert: bpattern patternAST isCascade.
+	allVarNodes :=  bpattern patternAST variableNodes.
+	patternVarNodes := allVarNodes select: [:each | each name = 'any' ].
+	self assert: patternVarNodes size equals: 2.
+	patternVarNodes do: [:each | 
+		self assert: each isPatternNode.
+	]
+]
+
+{ #category : 'tests' }
+BPatternTest >> testFromBlockWithConfiguredSelectorPattern [
+
+	| bpattern allMessages patternMessage any1 any2 |
+	bpattern := [ self nonPatternPart: any1 patternSuffix: any2. any1 printString ]
+						bpattern with: #patternSuffix:.
+	
+	allMessages := bpattern patternAST sendNodes.
+	patternMessage := allMessages first.
+	self assert: patternMessage isPatternNode.
+	self assert: patternMessage patternKeywords asArray equals: #('patternSuffix:').
+	self deny: allMessages second isPatternNode
+]
+
+{ #category : 'tests' }
+BPatternTest >> testFromBlockWithConfiguredVarPattern [
+
+	| bpattern allVarNodes patternVarNodes patternTemp |
+	bpattern := [ | nonPatternVar | patternTemp isNil ifFalse: [ patternTemp printString. nonPatternVar ]]
+						bpattern with: [ patternTemp ].
+	
+	allVarNodes :=  bpattern patternAST variableNodes.
+	patternVarNodes := allVarNodes select: [:each | each name = 'patternTemp' ].
+	self assert: patternVarNodes notEmpty.
+	patternVarNodes do: [:each | 
+		self assert: each isPatternNode.
+		self assert: each isAnything.	
+	].	 
+	(allVarNodes copyWithoutAll: patternVarNodes) do: [ :each |
+			self deny: each isPatternNode 
+	]
+]
+
+{ #category : 'tests' }
+BPatternTest >> testFromBlockWithDefaultSelectorPattern [
+
+	| bpattern allMessages patternMessage a b |
+	bpattern := [ self nonPatternPart: a anySuffix: b. a printString ] bpattern.
+	
+	allMessages := bpattern patternAST sendNodes.
+	patternMessage := allMessages first.
+	self assert: patternMessage isPatternNode.
+	self assert: patternMessage patternKeywords asArray equals: #('anySuffix:').
+	self deny: allMessages second isPatternNode
+]
+
+{ #category : 'tests' }
+BPatternTest >> testFromBlockWithDefaultUnarySelectorPattern [
+
+	| bpattern anyVar varNode |
+	bpattern := [ anyVar anySelector ] bpattern.
+	
+	varNode :=  bpattern patternAST sendNodes first.
+	self assert: varNode isPatternNode.
+	self assert: varNode isSelectorList.
+	self assert: varNode patternKeywords asArray equals: #('anySelector')
+]
+
+{ #category : 'tests' }
+BPatternTest >> testFromBlockWithDefaultVarPattern [ 
+
+	| bpattern block allVarNodes patternVarNodes any |
+	block := [| nonPatternTemp | nonPatternTemp := any isNil ifFalse: [ any printString ]].
+	bpattern := block bpattern.
+	
+	self assert: bpattern class equals: BPattern.
+	self assert: bpattern patternAST sourceCode equals: block sourceNode body sourceCode.
+	allVarNodes :=  bpattern patternAST variableNodes.
 	patternVarNodes := allVarNodes select: [:each | each name = 'any' ].
 	self assert: patternVarNodes notEmpty.
 	patternVarNodes do: [:each | 
@@ -275,170 +370,13 @@ BPatternTest >> testCreationFromBlock [
 ]
 
 { #category : 'tests' }
-BPatternTest >> testCreationFromBlockForCascadeWithExternalPatternReceiver [
+BPatternTest >> testFromBlockWithVarPatternConfigBlock [
 
-	| actual allVarNodes patternVarNodes patternVar |
-	actual := [ patternVar printString; asString] bpattern with: [ patternVar ].
+	| bpattern allVarNodes patternVarNodes patternTemp |
+	bpattern := [ | nonPatternVar | patternTemp isNil ifFalse: [ patternTemp printString. nonPatternVar ]]
+						bpattern with: [ patternTemp ] -> [:pattern | pattern beVariable ].
 	
-	self assert: actual patternAST isCascade.
-	allVarNodes :=  actual patternAST variableNodes.
-	patternVarNodes := allVarNodes select: [:each | each name = 'patternVar' ].
-	self assert: patternVarNodes size equals: 2.
-	patternVarNodes do: [:each | 
-		self assert: each isPatternNode.
-	]
-]
-
-{ #category : 'tests' }
-BPatternTest >> testCreationFromBlockShouldNotModifyOriginalMethodAST [
-
-	| block any |
-	block := [ any ].
-	block bpattern.
-	
-	block sourceNode variableNodes do: [:each | 
-		self deny: each isPatternNode "original AST was not modified"
-	]
-]
-
-{ #category : 'tests' }
-BPatternTest >> testCreationFromBlockUsingDefaultSelectorPattern [
-
-	| actual anyVar varNode |
-	actual := [ anyVar anySelector: #arg1 nonPattern: #arg3 ] bpattern.
-	
-	self assert: actual class equals: BPattern.
-	varNode :=  actual patternAST sendNodes first.
-	self assert: varNode isPatternNode.
-	self deny: varNode isSelectorList.
-	self assert: varNode patternKeywords asArray equals: #('anySelector:')
-]
-
-{ #category : 'tests' }
-BPatternTest >> testCreationFromBlockUsingDefaultUnarySelectorPattern [
-
-	| actual anyVar varNode |
-	actual := [ anyVar anySelector ] bpattern.
-	
-	self assert: actual class equals: BPattern.
-	varNode :=  actual patternAST sendNodes first.
-	self assert: varNode isPatternNode.
-	self assert: varNode isSelectorList.
-	self assert: varNode patternKeywords asArray equals: #('anySelector')
-]
-
-{ #category : 'tests' }
-BPatternTest >> testCreationFromBlockUsingDefaultVarPattern [
-
-	| actual anyVar varNode |
-	actual := [ anyVar printString ] bpattern.
-	
-	self assert: actual class equals: BPattern.
-	varNode :=  actual patternAST variableNodes first.
-	self assert: varNode isPatternNode.
-	self assert: varNode isAnything.
-]
-
-{ #category : 'tests' }
-BPatternTest >> testCreationFromBlockWithDefaultSelectorPattern [
-
-	| actual block allMessages patternMessage |
-	block := [:a :b| self nonPatternPart: a anySuffix: b. a printString ].
-	actual := block bpattern.
-	
-	self assert: actual class equals: BPattern.
-	allMessages := actual patternAST sendNodes.
-	patternMessage := allMessages first.
-	self assert: patternMessage isPatternNode.
-	self assert: patternMessage patternKeywords asArray equals: #('anySuffix:').
-	self deny: allMessages second isPatternNode.
-	block sourceNode sendNodes do: [:each | 
-		self deny: each  isPatternNode "original AST was not modified"
-	].
-	block sourceNode variableNodes do: [:each | 
-		self deny: each  isPatternNode "original AST was not modified"
-	]
-]
-
-{ #category : 'tests' }
-BPatternTest >> testCreationFromBlockWithExternalPatternVar [
-
-	| actual block allVarNodes patternVarNodes patternTemp |
-	block := [ | nonPatternVar | patternTemp isNil ifFalse: [ patternTemp printString. nonPatternVar ]].
-	actual := block bpattern with: [ patternTemp ].
-	
-	self assert: actual class equals: BPattern.
-	self assert: actual patternAST sourceCode equals: block sourceNode body sourceCode.
-	allVarNodes :=  actual patternAST variableNodes.
-	patternVarNodes := allVarNodes select: [:each | each name = 'patternTemp' ].
-	self assert: patternVarNodes notEmpty.
-	patternVarNodes do: [:each | 
-		self assert: each isPatternNode.
-		self assert: each isAnything.	
-	].	 
-	(allVarNodes copyWithoutAll: patternVarNodes) do: [ :each |
-			self deny: each isPatternNode 
-	].
-	block sourceNode variableNodes do: [:each | 
-		self deny: each  isPatternNode "original AST was not modified"
-	]
-]
-
-{ #category : 'tests' }
-BPatternTest >> testCreationFromBlockWithSelectorPattern [
-
-	| actual block allMessages patternMessage |
-	block := [:a :b| self nonPatternPart: a patternSuffix: b. a printString ].
-	actual := block bpattern with: #patternSuffix:.
-	
-	self assert: actual class equals: BPattern.
-	allMessages := actual patternAST sendNodes.
-	patternMessage := allMessages first.
-	self assert: patternMessage isPatternNode.
-	self assert: patternMessage patternKeywords asArray equals: #('patternSuffix:').
-	self deny: allMessages second isPatternNode.
-	block sourceNode sendNodes do: [:each | 
-		self deny: each  isPatternNode "original AST was not modified"
-	].
-	block sourceNode variableNodes do: [:each | 
-		self deny: each  isPatternNode "original AST was not modified"
-	]
-]
-
-{ #category : 'tests' }
-BPatternTest >> testCreationFromBlockWithStringPatternVar [
-
-	| actual block allVarNodes patternVarNodes nonPatternVar patternVar |
-	block := [ nonPatternVar isNil ifFalse: [ patternVar printString. nonPatternVar ]].
-	actual := block bpattern with: 'patternVar'.
-	
-	self assert: actual class equals: BPattern.
-	self assert: actual patternAST sourceCode equals: block sourceNode body sourceCode.
-	allVarNodes :=  actual patternAST variableNodes.
-	patternVarNodes := allVarNodes select: [:each | each name = 'patternVar' ].
-	self assert: patternVarNodes notEmpty.
-	patternVarNodes do: [:each | 
-		self assert: each isPatternNode.
-		self assert: each isAnything.	
-	].	 
-	(allVarNodes copyWithoutAll: patternVarNodes) do: [ :each |
-			self deny: each isPatternNode 
-	].
-	block sourceNode variableNodes do: [:each | 
-		self deny: each  isPatternNode "original AST was not modified"
-	]
-]
-
-{ #category : 'tests' }
-BPatternTest >> testCreationFromBlockWithVarDefinitionBlock [
-
-	| actual block allVarNodes patternVarNodes patternTemp |
-	block := [ | nonPatternVar | patternTemp isNil ifFalse: [ patternTemp printString. nonPatternVar ]].
-	actual := block bpattern with: [ patternTemp ] -> [:pattern | pattern beVariable ].
-	
-	self assert: actual class equals: BPattern.
-	self assert: actual patternAST sourceCode equals: block sourceNode body sourceCode.
-	allVarNodes :=  actual patternAST variableNodes.
+	allVarNodes :=  bpattern patternAST variableNodes.
 	patternVarNodes := allVarNodes select: [:each | each name = 'patternTemp' ].
 	self assert: patternVarNodes notEmpty.
 	patternVarNodes do: [:each | 
@@ -448,16 +386,32 @@ BPatternTest >> testCreationFromBlockWithVarDefinitionBlock [
 	].	 
 	(allVarNodes copyWithoutAll: patternVarNodes) do: [ :each |
 			self deny: each isPatternNode 
-	].
-	block sourceNode variableNodes do: [:each | 
-		self deny: each  isPatternNode "original AST was not modified"
 	]
 ]
 
 { #category : 'tests' }
-BPatternTest >> testCreationFromBlockWithVarInsideDynamicArray [
+BPatternTest >> testFromBlockWithVarPatternConfiguredByStringVarName [
+
+	| bpattern allVarNodes patternVarNodes nonPatternVar patternVar |
+	bpattern := [ nonPatternVar isNil ifFalse: [ patternVar printString. nonPatternVar ]]
+						bpattern with: 'patternVar'.
+	
+	allVarNodes :=  bpattern patternAST variableNodes.
+	patternVarNodes := allVarNodes select: [:each | each name = 'patternVar' ].
+	self assert: patternVarNodes notEmpty.
+	patternVarNodes do: [:each | 
+		self assert: each isPatternNode.
+		self assert: each isAnything.	
+	].	 
+	(allVarNodes copyWithoutAll: patternVarNodes) do: [ :each |
+			self deny: each isPatternNode 
+	]
+]
+
+{ #category : 'tests' }
+BPatternTest >> testFromBlockWithVarPatternInsideDynamicArray [
 	| bpattern any varNode |
-	bpattern := [{any} printString] bpattern.
+	bpattern := [ {any} printString ] bpattern.
 	
 	varNode :=  bpattern patternAST variableNodes first.
 	self assert: varNode isPatternNode.
@@ -468,52 +422,49 @@ BPatternTest >> testCreationFromBlockWithVarInsideDynamicArray [
 { #category : 'tests' }
 BPatternTest >> testPrinting [
 
-	| actual pattern|
-	pattern := [:a :b| a someMessage: b ] bpattern.
+	| actual pattern anyRcv anyArg |
+	pattern := [ anyRcv someMessage: anyArg ] bpattern.
 	actual := pattern printString.
 	
-	self assert: actual equals: 'a BPattern(a someMessage: b)'
+	self assert: actual equals: 'a BPattern(anyRcv someMessage: anyArg)'
 ]
 
 { #category : 'tests' }
-BPatternTest >> testRewriteAST [
-	| searchBlock rewriteBlock searchPattern rewritePattern originalBlock rewrittenAST rewrittenCode expectedResult any |
-	searchBlock := [any isNil ifFalse: [ any printString ]].
-	rewriteBlock := [any ifNotNil: [ any printString ]].
-	searchPattern := searchBlock bpattern.
-	rewritePattern := rewriteBlock bpattern.
-	originalBlock := [:someVar | someVar isNil ifFalse: [ someVar printString ]].
+BPatternTest >> testRewriteASTWithConfiguredPatternVars [
+	| searchPattern rewritePattern originalBlock rewrittenAST rewrittenCode expectedResult some |
+	searchPattern := [ some isNil ifFalse: [ some printString ]] bpattern with: [ some ].
+	rewritePattern := [ some ifNotNil: [ some printString ]] bpattern with: [ some ].
+	originalBlock := [:someTemp | someTemp isNil ifFalse: [ someTemp printString ]].
 	rewrittenAST := searchPattern rewriteAST: originalBlock sourceNode with: rewritePattern.
 	rewrittenCode := rewrittenAST formattedCode.
-	expectedResult := [:someVar | someVar ifNotNil: [ someVar printString ]] sourceNode formattedCode.
+	expectedResult := [:someTemp | someTemp ifNotNil: [ someTemp printString ]] sourceNode formattedCode.
 	self assert: rewrittenCode equals: expectedResult
-
 ]
 
 { #category : 'tests' }
-BPatternTest >> testRewriteASTExternalPatternVar [
-	| searchBlock rewriteBlock searchPattern rewritePattern originalBlock rewrittenAST rewrittenCode expectedResult a |
-	searchBlock := [a isNil ifFalse: [ a printString ]].
-	rewriteBlock := [a ifNotNil: [ a printString ]].
-	searchPattern := searchBlock bpattern with: { [ a ] }.
-	rewritePattern := rewriteBlock bpattern with: { [ a ] }.
-	originalBlock := [:someVar | someVar isNil ifFalse: [ someVar printString ]].
+BPatternTest >> testRewriteASTWithDefaultPatternVars [
+	| searchPattern rewritePattern originalBlock rewrittenAST rewrittenCode expectedResult any |
+	searchPattern := [ any isNil ifFalse: [ any printString ]] bpattern.
+	rewritePattern := [ any ifNotNil: [ any printString ]] bpattern.
+	originalBlock := [:someTemp | someTemp isNil ifFalse: [ someTemp printString ]].
 	rewrittenAST := searchPattern rewriteAST: originalBlock sourceNode with: rewritePattern.
 	rewrittenCode := rewrittenAST formattedCode.
-	expectedResult := [:someVar | someVar ifNotNil: [ someVar printString ]] sourceNode formattedCode.
+	expectedResult := [:someTemp | someTemp ifNotNil: [ someTemp printString ]] sourceNode formattedCode.
 	self assert: rewrittenCode equals: expectedResult
+
 ]
 
 { #category : 'tests' }
 BPatternTest >> testScanAST [
-	| patternBlock pattern searchScopeBlock result matchVar any |
-	patternBlock := [any isNil ifFalse: [ any printString ]].
+	| patternBlock pattern searchScopeBlock matchingNode matchingVars patternVar any |
+	patternBlock := [ any isNil ifFalse: [ any printString ]].
 	pattern := patternBlock bpattern.
-	searchScopeBlock := [:someVar | someVar isNil ifFalse: [ someVar printString ]].
+	searchScopeBlock := [:someVar | someVar isNil ifFalse: [ someVar printString ]. self printString].
 
-	result := pattern scanAST: searchScopeBlock sourceNode.
+	pattern scanAST: searchScopeBlock sourceNode do: [:node :context | matchingNode := node. matchingVars := context copy ].
 	
-	matchVar := pattern patternAST variableNodes first.
-	self assert: matchVar name equals: 'any'.
-	self assert: (result at: matchVar) equals: searchScopeBlock sourceNode variableNodes first.
+	patternVar := pattern patternAST variableNodes first.
+	self assert: patternVar name equals: 'any'.
+	self assert: (matchingVars at: patternVar) equals: searchScopeBlock sourceNode variableNodes first.
+	self assert: matchingNode equals: searchScopeBlock sourceNode statements first.
 ]

@@ -1,3 +1,9 @@
+"
+I am an AST visitor to build the pattern AST from the given AST node using a specified configs (#patternConfigs).
+The original AST in that case is modified during the visit logic. The configured AST nodes are transformed into the pattern ones.
+
+I am used by BPattern class to build the final #patternAST instance from the given block.
+"
 Class {
 	#name : 'BPatternASTBuilder',
 	#superclass : 'OCProgramNodeVisitor',

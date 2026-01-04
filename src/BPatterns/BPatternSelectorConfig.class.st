@@ -1,3 +1,8 @@
+"
+I am a superclass for a selector pattern configs. 
+My subclasses configure a message sends and a method nodes.
+They must implement #isForKeyword: message to specify a set of keywords which are defined as a pattern
+"
 Class {
 	#name : 'BPatternSelectorConfig',
 	#superclass : 'BPatternConfig',

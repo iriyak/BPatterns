@@ -2,19 +2,33 @@
 I represent a source code rewrite rule using two pattern blocks:
 
 ```Smalltalk
-	[:any :any2 | [ any isNil ifTrue: any2 ] -> [ any ifNil: any2 ]] brewrite
+	| any any2 |
+	[[ any isNil ifTrue: any2 ] -> [ any ifNil: any2 ]] brewrite
 ```
 
-The main outer block encloses an association of two pattern blocks: the search pattern and the replace pattern. The arguments of the outer block represent the pattern variables so that both pattern blocks can reference them as normal variables. As result the #brewrite message creates my instance with two BPattern objects:
+The main outer block encloses an association of two pattern blocks: the search pattern and the replace pattern. The variables and selectors inside the rewrite block can be used as a pattern to match particular AST nodes.
 
-```Smalltalk
-	BPatternREwrite fromPattern: searchPattern to: rewritePattern
+By default the following objects are automatically configured as **ANY** pattern to match any AST node:
+- variables started with **any** word
+- selectors where a keyword is started with **any** word
+
+To narrow the filter represented by a pattern you have to configure it using **#with:** message:
+
+```
+	| any any2 |
+	[[ any isNil ifTrue: any2 ] -> [ any ifNil: any2 ]] 
+		brewrite with: [ anyVar ] -> [:pattern | pattern beVariable ]
 ```
 
-Once you have a brewrite instance you can preview the system changes it represents and apply them using the refactoring UI:
+Underhood my instances consists of two BPatterns: #searchPattern and #rewritePattern. The configuration from #with: message is applied to both of them.
+
+See the package comment for the full details about the patterns configuration.
+
+Once you have a brewrite instance you can preview the system changes it represents and then apply it using the refactoring UI:
 
 ```Smalltalk
 	[:any :any2 | any isNil ifTrue: any2 ] brewrite preview.
+
 	[:any | [ any printString asString ] -> [ any printString ]] brewrite 
 		previewForClass: BPatternMethodQueryTest.
 ```
@@ -24,7 +38,6 @@ Class {
 	#name : 'BPatternRewrite',
 	#superclass : 'Object',
 	#instVars : [
-		'definitionBlock',
 		'searchPattern',
 		'rewritePattern'
 	],

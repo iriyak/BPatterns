@@ -1,3 +1,13 @@
+"
+I am special search rule class to handle some corner cases and provide the missing initialization methods required for BPattern.
+
+Particularly #performOn: method uses new recursion search message #recusivelySearchInContextExcept: to fix the infinite loop for primitive bpatterns like:
+
+```
+[ any ] bpattern
+```
+
+"
 Class {
 	#name : 'BPatternSearchRule',
 	#superclass : 'OCSearchRule',

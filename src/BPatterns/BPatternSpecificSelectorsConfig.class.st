@@ -1,3 +1,8 @@
+"
+I am a config for given set of keyword patterns.
+
+I convert message send nodes or method nodes to a pattern if its selector contains a keywords from my #patternKeywords list
+"
 Class {
 	#name : 'BPatternSpecificSelectorsConfig',
 	#superclass : 'BPatternSelectorConfig',

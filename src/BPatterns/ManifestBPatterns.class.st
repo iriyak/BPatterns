@@ -1,6 +1,7 @@
 "
-I represent an AST pattern which can be matched against AST nodes.
-My instances are created from a pattern block using **#bpattern** message:
+BPattern is a scripting tool to search and rewrite the system using simple code examples defined by blocks.
+
+BPatterns can be created using **#bpattern** message to a pattern block:
 
 ```
 	| any anyBlock |
@@ -27,7 +28,7 @@ Using two BPatterns you can rewrite the matching methods:
 		[ any printString asString ] -> [ any printString ] 
 	] brewrite previewForClass: BPatternMethodQueryTest
 ```
-See `BPatternRewrite` class for more details about the rewrite.
+See `BPatternRewrite` and `BPatternRewrite` class for more implementation details.
 
 ##Patterns configuration
 
@@ -292,193 +293,9 @@ Here is a rewrite example which will find a simple recursion and replace it with
 
 "
 Class {
-	#name : 'BPattern',
-	#superclass : 'Object',
-	#instVars : [
-		'patternAST',
-		'configs',
-		'isConfigured'
-	],
-	#category : 'BPatterns',
-	#package : 'BPatterns'
+	#name : 'ManifestBPatterns',
+	#superclass : 'PackageManifest',
+	#category : 'BPatterns-Manifest',
+	#package : 'BPatterns',
+	#tag : 'Manifest'
 }
-
-{ #category : 'instance creation' }
-BPattern class >> fromAST: anASTNode [ 
-	^self new 
-		patternAST: anASTNode
-]
-
-{ #category : 'instance creation' }
-BPattern class >> fromBlock: definitionBlock [ 
-	| definitionAST patternAST |
-	definitionAST := definitionBlock sourceNode.
-	patternAST := (definitionAST statements size == 1 and: [ definitionAST temporaries isEmpty ])
-		  ifTrue: [ definitionAST statements first ]
-		  ifFalse: [ definitionAST body ].
-	^self fromAST: patternAST
-	
-]
-
-{ #category : 'comparing' }
-BPattern >> = anObject [
-	"Answer whether the receiver and anObject represent the same object."
-
-	self == anObject ifTrue: [ ^ true ].
-	self class = anObject class ifFalse: [ ^ false ].
-	^self patternAST = anObject patternAST
-]
-
-{ #category : 'converting' }
-BPattern >> adoptToSequenceNode [ 
-	patternAST isSequence ifFalse: [ 
-		patternAST := OCSequenceNode statements: (Array with: patternAST)]
-]
-
-{ #category : 'private' }
-BPattern >> applyConfigs [
-	| astBuilder |
-	astBuilder := BPatternASTBuilder configuredBy: configs.
-	astBuilder visitNode: patternAST.
-	isConfigured := true
-]
-
-{ #category : 'converting' }
-BPattern >> beMethod: headerBlock [
-	self adoptToSequenceNode.
-	patternAST := BPatternMethodNode 
-						fromHeaderBlock: headerBlock 
-						body: patternAST.
-
-]
-
-{ #category : 'converting' }
-BPattern >> bpattern [
-	^self
-]
-
-{ #category : 'printing' }
-BPattern >> displayStringOn: aStream [
-	
-	aStream nextPutAll: patternAST formattedCode
-]
-
-{ #category : 'comparing' }
-BPattern >> hash [
-	^self patternAST hash
-]
-
-{ #category : 'initialization' }
-BPattern >> initialize [ 
-	super initialize.
-
-	configs := OrderedCollection new.
-	isConfigured := false.
-	self useDefaultConfigs
-]
-
-{ #category : 'testing' }
-BPattern >> isSequenceNode [ 
-	^patternAST isSequence
-]
-
-{ #category : 'testing' }
-BPattern >> matchesAST: aNode [
-	self scanAST: aNode do: [ ^true ].
-	^false
-]
-
-{ #category : 'testing' }
-BPattern >> matchesMethod: aMethod [
-	^self matchesAST: aMethod sourceNode
-]
-
-{ #category : 'accessing' }
-BPattern >> patternAST [
-	isConfigured ifFalse: [ self applyConfigs ].
-	^ patternAST 
-]
-
-{ #category : 'accessing' }
-BPattern >> patternAST: anASTNode [
-	patternAST := anASTNode copy
-]
-
-{ #category : 'copying' }
-BPattern >> postCopy [ 
-	super postCopy.
-	
-	patternAST := patternAST copy.
-	configs := configs copy.
-]
-
-{ #category : 'printing' }
-BPattern >> printOn: aStream [
-	super printOn: aStream.
-	
-	aStream nextPut: $(.
-	self displayStringOn: aStream.
-	aStream nextPut: $)
-]
-
-{ #category : 'rewriting' }
-BPattern >> rewriteAST: originalAST with: rewritePattern [
-
-	| rewriter |
-	rewriter := BPatternASTRewriter new.
-	rewriter addRule: (BPatternReplaceRule new 
-			searchTree: self patternAST;
-			replaceTree: rewritePattern patternAST).
-	rewriter executeTree: originalAST.
-	^rewriter tree
-	
-]
-
-{ #category : 'scanning' }
-BPattern >> scanAST: anAST do: nodeBlock [
-	| searcher |
-	
-	searcher := OCParseTreeSearcher new.
-	searcher addRule: (BPatternSearchRule new 
-			searchTree: self patternAST;
-			answerBlock: [ :aNode :answer | nodeBlock cull: aNode cull: searcher context ]).
-	searcher executeTree: anAST
-]
-
-{ #category : 'initialization' }
-BPattern >> useDefaultConfigs [
-	configs add: BPatternDefaultVarConfig new.
-	configs add: BPatternDefaultSelectorConfig new
-]
-
-{ #category : 'scanning' }
-BPattern >> users [
-
-	| result |
-	result := OrderedCollection new.
-	Smalltalk allClasses 
-		do:[:aClass| result addAll: (self usersInClass: aClass) ]
-		displayingProgress: 'Lookup for [', self displayString, ']'
-		every: 1000.
-	^result
-]
-
-{ #category : 'scanning' }
-BPattern >> usersInClass: aClass [
-	
-	| result |
-	result := OrderedCollection new.
-	aClass methodsDo: [:each | 	(self matchesMethod: each) ifTrue: [ result add: each ]].
-	aClass class methodsDo: [:each | 	(self matchesMethod: each) ifTrue: [ result add: each ]].
-	^result
-
-]
-
-{ #category : 'initialization' }
-BPattern >> with: configSpecs [
-	
-	| patternConfigs |
-	patternConfigs := BPatternConfig readFromSpecs: configSpecs.
-	configs addAll: patternConfigs.
-	isConfigured := false
-]

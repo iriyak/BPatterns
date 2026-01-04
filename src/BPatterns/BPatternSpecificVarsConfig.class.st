@@ -1,3 +1,8 @@
+"
+I am a config for given set of variable patterns.
+
+I convert variable nodes to a pattern if its name is from my #patternVars list
+"
 Class {
 	#name : 'BPatternSpecificVarsConfig',
 	#superclass : 'BPatternVarConfig',
