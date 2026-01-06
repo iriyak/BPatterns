@@ -1,3 +1,13 @@
+"
+I extend the original pattern method node for the BPattern needs:
+- expicit list of keyword patterns (patternKeywords)
+- list of filter blocks (filters) to allow users to narrow the search for the method nodes
+- various filter modifies like #beKeyword, #beUnary, etc
+- new logic for the unary pattern selector to work like a list by default with any number of arguments
+
+See the package comment for the full details about the selector pattern configuration.
+
+"
 Class {
 	#name : 'BPatternMethodNode',
 	#superclass : 'OCPatternMethodNode',

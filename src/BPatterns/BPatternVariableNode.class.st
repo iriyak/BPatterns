@@ -1,3 +1,11 @@
+"
+I extend the original pattern variable node for the BPattern needs:
+- list of filter blocks (filters) to allow users to narrow the search for the variable nodes
+- various filter modifiers like #beVariable, #beInstVar, #beLiteral, etc
+- default state is to recursively match any nodes
+
+See the package comment for the full details about the variable pattern configuration.
+"
 Class {
 	#name : 'BPatternVariableNode',
 	#superclass : 'OCPatternVariableNode',

@@ -1,7 +1,7 @@
 "
-I am special search rule class to handle some corner cases and provide the missing initialization methods required for BPattern.
+I am special search rule to handle some corner cases and provide the missing initialization methods required for BPattern.
 
-Particularly #performOn: method uses new recursion search message #recusivelySearchInContextExcept: to fix the infinite loop for primitive bpatterns like:
+Particularly #performOn: method uses new recursion search message #recusivelySearchInContextExcept: to fix the infinite loop during the search for the primitive bpatterns like:
 
 ```
 [ any ] bpattern
