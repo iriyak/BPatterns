@@ -126,6 +126,9 @@ Patterns can be configured to match a particular type of variables:
 		browseUsers
 ```
 
+<img width="1010" height="505" alt="Screenshot 2026-01-08 at 21 47 13" src="https://github.com/user-attachments/assets/36b863a8-dda3-4759-8a67-c686a08414e6" />
+
+
 And you can specify an arbitraty block filter using **#where:** message:
 
 ```Smalltalk
@@ -136,6 +139,8 @@ And you can specify an arbitraty block filter using **#where:** message:
 				(var name beginsWith: 'a') not]];
 		browseUsers
 ```
+
+<img width="986" height="494" alt="Screenshot 2026-01-08 at 21 52 02" src="https://github.com/user-attachments/assets/60afe9f2-0fb0-4390-9120-b4c7451580d0" />
 
 For other options see `BPatternVariableNode`. Few examples here:
 
@@ -149,6 +154,8 @@ Patterns can find message sends to globals:
 		with: [ any ] -> [:pattern | pattern beGlobalVar ];
 		browseUsers
 ```
+
+<img width="1017" height="551" alt="Screenshot 2026-01-08 at 21 54 42" src="https://github.com/user-attachments/assets/7a1b51ef-c7d2-4b0a-bb9e-9b7a660ccb9a" />
 
 And you can narrow filter by given set of values:
 
