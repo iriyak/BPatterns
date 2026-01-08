@@ -449,6 +449,6 @@ BPatternRewriteTest >> testRewriteUsingSelfAsPattern [
 	self 
 		rewriteBlock: [ 10 printString ]
 		by: [ [ self printString ] -> [ self asString ] ]
-		with: [ self ] -> [:pattern | pattern beLiteral ]
+		with: [ self ]
 		compareTo: [ 10 asString ]
 ]
