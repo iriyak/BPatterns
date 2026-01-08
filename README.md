@@ -167,6 +167,8 @@ And you can narrow filter by given set of values:
 		browseUsers
 ```
 
+<img width="949" height="512" alt="Screenshot 2026-01-08 at 22 00 19" src="https://github.com/user-attachments/assets/3b32a99c-ea34-4cd5-9ae8-5bad0d79ee7a" />
+
 ### Undeclared variable patterns
 
 Patterns can find undeclared variables:
@@ -177,6 +179,8 @@ Patterns can find undeclared variables:
 		with: [ any ] -> [:pattern | pattern beUndeclared ];
 		browseUsers
 ```
+
+<img width="984" height="499" alt="Screenshot 2026-01-08 at 22 03 32" src="https://github.com/user-attachments/assets/b3c61a94-d0fb-47b7-ac43-56af4ab9957e" />
 
 ### Literal patterns
 
@@ -191,6 +195,8 @@ Patterns can be configured to match literals:
 
 This pattern will find all sum expressions with two literals.
 
+<img width="899" height="493" alt="Screenshot 2026-01-08 at 22 05 23" src="https://github.com/user-attachments/assets/6d1e1efc-9cbd-427d-beb3-5acdb2700c8b" />
+
 To narrow the filter you can add a **#where:** predicate block to match the literal values by an arbitrary criteria:
 
 ```Smalltalk
@@ -200,6 +206,8 @@ To narrow the filter you can add a **#where:** predicate block to match the lite
 		browseUsers
 ```
 
+<img width="1019" height="522" alt="Screenshot 2026-01-08 at 22 07 55" src="https://github.com/user-attachments/assets/ff3a3134-c9f4-4740-a386-6bd6cf4bc3f0" />
+
 And you can also search for a particular list of literal values:
 
 ```Smalltalk
@@ -208,6 +216,8 @@ And you can also search for a particular list of literal values:
 		with: [ any2 ] -> [:pattern | pattern beLiteralWithAny: #(2 3)];
 		browseUsers
 ```
+
+<img width="1007" height="544" alt="Screenshot 2026-01-08 at 22 10 20" src="https://github.com/user-attachments/assets/5e044e31-e567-49e9-a22d-616dd5aef403" />
 
 ### Selector patterns
 
