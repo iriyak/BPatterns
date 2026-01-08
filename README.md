@@ -288,7 +288,7 @@ It will match expressions like:
 	(instVar + 1) printString.
 ```
 
-Unary patterns are usefull to describe an arbitrary message sends. For example you can find all super calls with subsequent message sends:
+Unary patterns are useful to describe an arbitrary message sends. For example you can find all super calls with subsequent message sends:
 
 ```Smalltalk
 	[ super anySuperCall anyMessage ] bpattern browseUsers
@@ -304,6 +304,9 @@ If you need a pattern to match **the unary** type of messages you have to explic
 		browseUsers
 ```
 
+<img width="1005" height="395" alt="Screenshot 2026-01-08 at 22 34 24" src="https://github.com/user-attachments/assets/362f42da-2454-454a-90c4-7d4342a151fe" />
+
+
 ## BMethod
 
 Patterns defined by **#bpattern** message does not allow to use method header. To represent a method with a full signature there are **#bmethod** expressions:
@@ -318,12 +321,13 @@ Here the enclosing block of **#bmethod** returns an association of a pattern blo
 
 ```Smalltalk
 		| anyStatement |
-		[[ self anyMessage ] -> [ anyStatement. super anyMessage ]] bmethod 
-			with: [ anyStatement ] -> [:pattern| pattern beMultiStatements ]; 
+		[[ self anyMessage ] -> [ anyStatement. super anyMessage ]] bmethod 			
 			browseUsers
 ```
 
 This pattern will find all methods with a super call after any sequence of other statements.
+
+<img width="993" height="547" alt="Screenshot 2026-01-08 at 22 37 51" src="https://github.com/user-attachments/assets/ab2cbd26-41a7-49a6-9b66-9ae83c2df98a" />
 
 The result of **#bmethod** is an instance of `BPattern` and therefore it can be used for the code search and for the rewrite:
 
@@ -333,6 +337,6 @@ The result of **#bmethod** is an instance of `BPattern` and therefore it can be 
 		[[ self anyMessage ] -> [ stmts. self anyMessage ]] bmethod 
 			->
 		[[ self anyMessage ] -> [ [ stmts ] repeat ]] bmethod
-	] brewrite with: [stmts] -> [:pattern| pattern beMultiStatements ]
+	] brewrite
 ```
 Here is a rewrite example which will find a simple recursion and replace it with a loop. The recursive call can be any kind of message send with any number of arguments.
