@@ -32,10 +32,15 @@ Once you have a `BPattern` you can browse the system to find all matching method
 	[ any isNil ifTrue: any2 ] bpattern browseUsers.
 ```
 
+<img width="1095" height="464" alt="Screenshot 2026-01-08 at 18 43 10" src="https://github.com/user-attachments/assets/3a392fdc-a34c-470f-970b-5c23e85a869d" />
+
+
 ```Smalltalk
 	| any |
 	[ any printString asString ] bpattern browseUsersInClass: BPatternMethodQueryTest.
 ```
+
+<img width="1033" height="313" alt="Screenshot 2026-01-08 at 18 44 34" src="https://github.com/user-attachments/assets/b39068f8-dec0-457d-8e65-c7bd45df64c6" />
 
 Using two BPatterns you can rewrite the matching methods:
 
