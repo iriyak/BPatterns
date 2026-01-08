@@ -2,8 +2,8 @@
 
 [![GitHub release](https://img.shields.io/github/release/dionisiydk/BPatterns.svg)](https://github.com/dionisiydk/BPatterns/releases/latest)
 [![Unit Tests](https://github.com/dionisiydk/BPatterns/actions/workflows/tests.yml/badge.svg)](https://github.com/dionisiydk/BPatterns/actions/workflows/tests.yml)
-
 [![Pharo 13](https://img.shields.io/badge/Pharo-13-informational)](https://pharo.org)
+[![Pharo 14-alpha](https://img.shields.io/badge/Pharo-alpha-informational)](https://pharo.org)
 
 Scripting tool to search and rewrite the system using simple code examples defined by blocks.
 Underhood it is based on the original Smalltalk rewrite engine but it does not require special syntax. 
