@@ -442,3 +442,13 @@ BPatternRewriteTest >> testRewriteMultipleExpressions [
 		by: [ [ anyRcv foo: anyArg ] -> [ anyRcv bar: anyArg ] ]
 		compareTo: [self bar: 1. bar foo1 bar: 2. (self bar: a) bar: (b bar: c)]
 ]
+
+{ #category : 'tests' }
+BPatternRewriteTest >> testRewriteUsingSelfAsPattern [
+
+	self 
+		rewriteBlock: [ 10 printString ]
+		by: [ [ self printString ] -> [ self asString ] ]
+		with: [ self ] -> [:pattern | pattern beLiteral ]
+		compareTo: [ 10 asString ]
+]
