@@ -273,7 +273,6 @@ Here the enclosing block of **#bmethod** returns an association of a pattern blo
 ```
 		| anyStatement |
 		[[ self anyMessage ] -> [ anyStatement. super anyMessage ]] bmethod 
-			with: [ anyStatement ] -> [:pattern| pattern beMultiStatements ]; 
 			browseUsers
 ```
 
@@ -287,7 +286,7 @@ The result of **#bmethod** is an instance of `BPattern` and therefore it can be 
 		[[ self anyMessage ] -> [ stmts. self anyMessage ]] bmethod 
 			->
 		[[ self anyMessage ] -> [ [ stmts ] repeat ]] bmethod
-	] brewrite with: [stmts] -> [:pattern| pattern beMultiStatements ]
+	] brewrite
 ```
 Here is a rewrite example which will find a simple recursion and replace it with a loop. The recursive call can be any kind of message send with any number of arguments.
 
