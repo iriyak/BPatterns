@@ -270,6 +270,8 @@ To play a bit try to browse all binary messages where receiver and arguments are
 		browseUsers
 ```
 
+<img width="1004" height="443" alt="Screenshot 2026-01-08 at 22 13 56" src="https://github.com/user-attachments/assets/52768459-bd0a-4239-b3a3-8847ab25c3d1" />
+
 ### Unary selector patterns
 
 The unary patterns are special. If an unary selector begins with **any** word it will match any type of messages (unary, binary and keyword) with any number of arguments. No need to reference arguments explicitly:
@@ -291,6 +293,8 @@ Unary patterns are usefull to describe an arbitrary message sends. For example y
 ```Smalltalk
 	[ super anySuperCall anyMessage ] bpattern browseUsers
 ```
+
+<img width="912" height="494" alt="Screenshot 2026-01-08 at 22 17 43" src="https://github.com/user-attachments/assets/6434bb75-d2a7-4871-99bd-2464e6873cfe" />
 
 If you need a pattern to match **the unary** type of messages you have to explicitly configure it:
 
