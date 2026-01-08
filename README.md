@@ -34,6 +34,7 @@ Once you have a `BPattern` you can browse the system to find all matching method
 
 <img width="1095" height="464" alt="Screenshot 2026-01-08 at 18 43 10" src="https://github.com/user-attachments/assets/3a392fdc-a34c-470f-970b-5c23e85a869d" />
 
+Or you can scope it for a single class:
 
 ```Smalltalk
 	| any |
@@ -50,10 +51,12 @@ Using two BPatterns you can rewrite the matching methods:
 		[ any printString asString ] -> [ any printString ] 
 	] brewrite previewForClass: BPatternMethodQueryTest
 ```
+
+<img width="697" height="498" alt="Screenshot 2026-01-08 at 21 19 43" src="https://github.com/user-attachments/assets/df2fca06-aa6e-46e4-8d45-432492d95af0" />
+
 See `BPatternRewrite` and `BPatternRewrite` class for more implementation details.
 
 ## Patterns configuration
-
 
 The variables and selectors inside the pattern block can be used as a pattern to match particular AST nodes.
 By default the following objects are automatically configured as **ANY** pattern to match any AST node:
