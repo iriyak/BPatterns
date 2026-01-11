@@ -68,7 +68,7 @@ By using such a configuration for non default objects they will be converted to 
 	[ someVar isNil ifTrue: anyBlock ] bpattern with: [ someVar ] -> [:pattern | pattern beVariable ]
 ```
 
-Notice that without the config block the **#someVar** object would only match variables named **#someVar**.
+Without the config block the **#someVar** object would only match variables named **#someVar**.
 
 The config block is optional and to enforce the pattern without extra settings you can just reference it:
 
@@ -189,7 +189,7 @@ Selectors can be also used as patterns:
 It will match any message sends with a selector started with #at: and any other second keyword. It does not require any configuration because **#anyOtherKeyword:** is started with any word.  
 
 The **keyword selector** pattern matches any type of selectors with same number of arguments.
-For example the following pattern will match any binary messages like 1 + 2 together with any one argument keywords:
+For example the following pattern will match one argument keywords and any binary messages like 1 + 2:
 
 ```
 	| any any2 |
@@ -258,7 +258,7 @@ If you need a pattern to match **the unary** type of messages you have to explic
 		browseUsers
 ```
 
-Notice this example shows many cascades where second message is not unary. In all these cases the last part of the cascade chain is #yourself - the unary message sent to the result of the original super call which really matches the bpattern. To exclude #yourself cases you can add an additional **#where: filter:
+Notice this example shows many cascades where second message is not unary. In all these cases the last part of the cascade chain is #yourself which matches the criteria as an unary message sent to the original super call. To exclude #yourself cases you can add an additional **#where**: filter:
  
 ```
 	[ super anySuperCall anyMessage ] bpattern 
@@ -266,7 +266,7 @@ Notice this example shows many cascades where second message is not unary. In al
 		browseUsers
 ```
 
-Or you can keep only non cascade cases:
+Or you can fully exclude cascades:
 
 ```
 	[ super anySuperCall anyMessage ] bpattern 
