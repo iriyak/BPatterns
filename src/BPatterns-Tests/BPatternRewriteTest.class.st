@@ -206,14 +206,14 @@ BPatternRewriteTest >> testRewriteForFullASTReplaceUsingPatternVar [
 BPatternRewriteTest >> testRewriteForGlobalVarUsingFilter [
 	| any |
 	self 
-		rewriteBlock: [ Smalltalk printString. Array asString. Set asArray. ByteArray . WeakArray ]
+		rewriteBlock: [ Smalltalk printString. Array asString. Set asString. ByteArray . WeakArray ]
 		by: [ [ any ] -> [ Array ] ] 
 		with: [ any ] -> [:pattern | 
 			pattern 
 				beGlobalVarWithAny: SequenceableCollection allSubclasses; 
 				where: [:class | class name endsWith: 'Array' ]
 		]
-		compareTo: [ Smalltalk printString. Array asString. Set asArray. Array . Array ]
+		compareTo: [ Smalltalk printString. Array asString. Set asString. Array . Array ]
 ]
 
 { #category : 'tests' }
