@@ -304,8 +304,29 @@ If you need a pattern to match **the unary** type of messages you have to explic
 		browseUsers
 ```
 
-<img width="1005" height="395" alt="Screenshot 2026-01-08 at 22 34 24" src="https://github.com/user-attachments/assets/362f42da-2454-454a-90c4-7d4342a151fe" />
+<img width="948" height="459" alt="Screenshot 2026-01-11 at 15 55 04" src="https://github.com/user-attachments/assets/89cfc8b7-c9e9-4fa9-b54d-c0987cbac077" />
 
+Notice this example shows many cascades where second message is not unary. 
+
+<img width="950" height="461" alt="Screenshot 2026-01-11 at 15 50 10" src="https://github.com/user-attachments/assets/85306e33-79f9-4d9c-8715-08cb8b565b82" />
+
+In all these cases the last part of the cascade chain is #yourself which matches the criteria as an unary message sent to the original super call. To exclude #yourself cases you can add an additional **#where**: filter:
+ 
+```Smalltalk
+	[ super anySuperCall anyMessage ] bpattern 
+		with: #anyMessage -> [:pattern | pattern beUnary where: [:node | node selector ~~ #yourself ]];
+		browseUsers
+```
+
+<img width="951" height="452" alt="Screenshot 2026-01-11 at 16 01 17" src="https://github.com/user-attachments/assets/8a67c865-48ab-4406-8f66-59f8132e0046" />
+
+Or you can keep fully exclude cascades:
+
+```Smalltalk
+	[ super anySuperCall anyMessage ] bpattern 
+		with: #anyMessage -> [:pattern | pattern beUnary where: [:node | node isCascaded not ]];
+		browseUsers
+```
 
 ## BMethod
 
