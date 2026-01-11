@@ -4,9 +4,8 @@ Please describe the package using the class comment of the included manifest cla
 Class {
 	#name : 'ManifestBPatternsTests',
 	#superclass : 'PackageManifest',
-	#category : 'BPatterns-Tests-Manifest',
-	#package : 'BPatterns-Tests',
-	#tag : 'Manifest'
+	#category : 'BPatterns-Tests',
+	#package : 'BPatterns-Tests'
 }
 
 { #category : 'code-critics' }
