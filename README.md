@@ -54,7 +54,7 @@ Using two BPatterns you can rewrite the matching methods:
 
 <img width="697" height="498" alt="Screenshot 2026-01-08 at 21 19 43" src="https://github.com/user-attachments/assets/df2fca06-aa6e-46e4-8d45-432492d95af0" />
 
-See `BPatternRewrite` and `BPatternRewrite` class for more implementation details.
+See `BPatternRewrite` and `BPatternRewrite` for the implementation details.
 
 ## Patterns configuration
 
