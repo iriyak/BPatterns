@@ -258,6 +258,23 @@ If you need a pattern to match **the unary** type of messages you have to explic
 		browseUsers
 ```
 
+Notice this example shows many cascades where second message is not unary. In all these cases the last part of the cascade chain is #yourself - the unary message sent to the result of the original super call which really matches the bpattern. To exclude #yourself cases you can add an additional **#where: filter:
+ 
+```
+	[ super anySuperCall anyMessage ] bpattern 
+		with: #anyMessage -> [:pattern | pattern beUnary where: [:node | node selector ~~ #yourself ]];
+		browseUsers
+```
+
+Or you can keep only non cascade cases:
+
+```
+	[ super anySuperCall anyMessage ] bpattern 
+		with: #anyMessage -> [:pattern | pattern beUnary where: [:node | node isCascaded not ]];
+		browseUsers
+```
+
+
 ##BMethod
 
 Patterns defined by **#bpattern** message does not allow to use method header. To represent a method with a full signature there are **#bmethod** expressions:
