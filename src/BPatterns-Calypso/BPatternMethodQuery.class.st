@@ -1,3 +1,6 @@
+"
+I return all methods matching given BPattern (a sample of a code expressed as a block)
+"
 Class {
 	#name : 'BPatternMethodQuery',
 	#superclass : 'ClyMethodQuery',
@@ -35,8 +38,8 @@ BPatternMethodQuery >> = anObject [
 BPatternMethodQuery >> decorateResultMethodEditor: aMethodEditor [
 
 	pattern scanAST: aMethodEditor editingMethod sourceNode do: [ :node |
-		aMethodEditor selectSourceNode: node.
-		^self ]
+		"select first matching node"
+		^aMethodEditor selectSourceNode: node ]
 ]
 
 { #category : 'comparing' }
@@ -67,7 +70,7 @@ BPatternMethodQuery >> prepareStateBeforeExecution [
 	super prepareStateBeforeExecution.
 	
 	pattern patternAST. "to ensure configs takes the effect"
-	self beReadOnlyObject
+	pattern beReadOnlyObject
 ]
 
 { #category : 'comparing' }
