@@ -5,7 +5,7 @@
 [![Pharo 13](https://img.shields.io/badge/Pharo-13-informational)](https://pharo.org)
 [![Pharo 14-alpha](https://img.shields.io/badge/Pharo-alpha-informational)](https://pharo.org)
 
-Scripting tool to search and rewrite the system using simple code examples defined by blocks. It is based on the original Smalltalk rewrite engine but it does not require special syntax. 
+Scripting tool to search and rewrite the system using simple code examples defined by blocks (**B**lock patterns). It is based on the original Smalltalk rewrite engine but it does not require special syntax. 
 
 ## Installation
 
