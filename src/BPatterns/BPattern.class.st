@@ -79,7 +79,8 @@ Class {
 	#instVars : [
 		'patternAST',
 		'configs',
-		'isConfigured'
+		'isConfigured',
+		'constantSelectors'
 	],
 	#category : 'BPatterns',
 	#package : 'BPatterns'
@@ -122,6 +123,7 @@ BPattern >> applyConfigs [
 	| astBuilder |
 	astBuilder := BPatternASTBuilder configuredBy: configs.
 	astBuilder visitNode: patternAST.
+	constantSelectors := astBuilder collectedSelectors.
 	isConfigured := true
 ]
 
@@ -172,6 +174,11 @@ BPattern >> matchesAST: aNode [
 
 { #category : 'testing' }
 BPattern >> matchesMethod: aMethod [
+	"Optimization to verify that all constant selectors from the pattern are actually used by the method.
+	It will avoid a slow AST scan for most of the unrelated methods"
+	self patternAST. "ensure the lazy pattern build"
+	(constantSelectors allSatisfy: [:each | aMethod hasSelector: each ]) ifFalse: [ ^false ].
+	
 	^self matchesAST: aMethod sourceNode
 ]
 

@@ -8,7 +8,8 @@ Class {
 	#name : 'BPatternASTBuilder',
 	#superclass : 'OCProgramNodeVisitor',
 	#instVars : [
-		'patternConfigs'
+		'patternConfigs',
+		'collectedSelectors'
 	],
 	#category : 'BPatterns',
 	#package : 'BPatterns'
@@ -27,11 +28,18 @@ BPatternASTBuilder >> applyConfigsFor: aNode [
 		thenDo: [ :each | 	each applyForNode: aNode ]
 ]
 
+{ #category : 'accessing' }
+BPatternASTBuilder >> collectedSelectors [
+
+	^ collectedSelectors
+]
+
 { #category : 'visiting' }
 BPatternASTBuilder >> initialize [
 	super initialize.
 	
-	patternConfigs := #()
+	patternConfigs := #().
+	collectedSelectors := OrderedCollection new
 ]
 
 { #category : 'accessing' }
@@ -49,6 +57,7 @@ BPatternASTBuilder >> patternConfigs: anObject [
 { #category : 'visiting' }
 BPatternASTBuilder >> visitMessageNode: aMessageNode [
 	self applyConfigsFor: aMessageNode.
+	aMessageNode isPatternNode ifFalse: [ collectedSelectors add: aMessageNode selector ].
 	
 	self visitNode: aMessageNode receiver.
 	self visitNode: aMessageNode selectorNode.
