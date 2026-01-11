@@ -320,7 +320,7 @@ In all these cases the last part of the cascade chain is #yourself which matches
 
 <img width="951" height="452" alt="Screenshot 2026-01-11 at 16 01 17" src="https://github.com/user-attachments/assets/8a67c865-48ab-4406-8f66-59f8132e0046" />
 
-Or you can keep fully exclude cascades:
+Or you can fully exclude cascades:
 
 ```Smalltalk
 	[ super anySuperCall anyMessage ] bpattern 
