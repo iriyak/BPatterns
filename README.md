@@ -93,7 +93,7 @@ By using such a configuration for non default objects they will be converted to 
 	[ someVar isNil ifTrue: anyBlock ] bpattern with: [ someVar ] -> [:pattern | pattern beVariable ]
 ```
 
-Notice that without the config block the **#someVar** object would only match variables named **#someVar**.
+Without the config block the **#someVar** object would only match variables named **#someVar**.
 
 The config block is optional and to enforce the pattern without extra settings you can just reference it:
 
@@ -228,10 +228,10 @@ Selectors can be also used as patterns:
 	[ any at: anyArg1 anyOtherKeyword: anyArg2 ] bpattern
 ```
 
-It will match any message sends with a selector started with #at: and any other second keyword. It does not require any configuration because **#anyOtherKeyword:** is started with any word.  
+It will match any message sends with a selector started with #at: and any other second keyword. It does not require any configuration because **#anyOtherKeyword:** is started with **any** word.  
 
 The **keyword selector** pattern matches any type of selectors with same number of arguments.
-For example the following pattern will match any binary messages like 1 + 2 together with any one argument keywords:
+For example the following pattern will match one argument keywords and any binary messages like 1 + 2:
 
 ```Smalltalk
 	| any any2 |
