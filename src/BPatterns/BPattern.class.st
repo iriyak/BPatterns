@@ -112,6 +112,13 @@ BPattern >> = anObject [
 	^self patternAST = anObject patternAST
 ]
 
+{ #category : 'accessing' }
+BPattern >> addConfig: aPatternConfig [
+	
+	configs add: aPatternConfig.
+	isConfigured := false
+]
+
 { #category : 'converting' }
 BPattern >> adoptToSequenceNode [ 
 	patternAST isSequence ifFalse: [ 
@@ -268,6 +275,5 @@ BPattern >> with: configSpecs [
 	
 	| patternConfigs |
 	patternConfigs := BPatternConfig readFromSpecs: configSpecs.
-	configs addAll: patternConfigs.
-	isConfigured := false
+	patternConfigs do: [ :each | self addConfig: each ]
 ]

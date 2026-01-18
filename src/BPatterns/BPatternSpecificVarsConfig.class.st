@@ -14,10 +14,15 @@ Class {
 }
 
 { #category : 'instance creation' }
-BPatternSpecificVarsConfig class >> forVars: varNames configuredBy: nodeBlock [
+BPatternSpecificVarsConfig class >> forVars: varNames [
 	varNames ifEmpty: [ self error: 'Pattern var names should not be empty!' ].
 	^self new 
-		patternVars: varNames;
+		patternVars: varNames
+]
+
+{ #category : 'instance creation' }
+BPatternSpecificVarsConfig class >> forVars: varNames configuredBy: nodeBlock [
+	^(self forVars: varNames)
 		nodeConfigBlock: nodeBlock
 ]
 
