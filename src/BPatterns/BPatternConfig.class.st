@@ -38,11 +38,11 @@ BPatternConfig class >> forSelectorsFrom: selectorOrArray configuredBy: configNo
 ]
 
 { #category : 'instance creation' }
-BPatternConfig class >> forVarsFrom: blocksWithVarsAndVars configuredBy: configNodeBlock [
+BPatternConfig class >> forVarsFrom: blocksWithVarsOrVarNames configuredBy: configNodeBlock [
 
 	| vars |	
 	vars := OrderedCollection new.
-	blocksWithVarsAndVars do: [:eachBlockOrVar | 
+	blocksWithVarsOrVarNames do: [:eachBlockOrVar | 
 		eachBlockOrVar isString 
 			ifTrue: [ vars add: eachBlockOrVar ]
 			ifFalse: [ eachBlockOrVar sourceNode variableNodes do: [:each | vars add: each name ]]].

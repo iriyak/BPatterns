@@ -10,19 +10,25 @@ Class {
 
 { #category : 'handling' }
 BPatternDeprecation >> buildBRewrite [
-	| deprecatedAST patternArgNames messagePatternNode searchPattern patternArgs patternConfig |
-	deprecatedAST := self contextOfDeprecatedMethod homeMethod ast.
-	patternArgs := deprecatedAST arguments collect: [:each | each copy ].
-	patternArgNames := patternArgs collect: [ :each | each name ].
-	patternConfig := BPatternSpecificVarsConfig forVars: (patternArgNames copyWith: #self).
-	messagePatternNode := OCMessageNode 
-		receiver: OCVariableNode selfNode
-		selector: deprecatedAST selector 
-		arguments: patternArgs.
+	| patternArgNames messagePatternNode searchPattern patternConfig |
+	messagePatternNode := self buildDeprecatedMessageNode. 
+	patternArgNames := messagePatternNode variableNodes collect: [ :each | each name ].
+	patternConfig := BPatternSpecificVarsConfig forVars: patternArgNames.
 	searchPattern := BPattern fromAST: messagePatternNode.
 	searchPattern addConfig: patternConfig.
 	rule addConfig: patternConfig.
 	^BPatternRewrite fromPattern: searchPattern to: rule
+]
+
+{ #category : 'handling' }
+BPatternDeprecation >> buildDeprecatedMessageNode [
+	| deprecatedAST patternArgs |
+	deprecatedAST := self contextOfDeprecatedMethod homeMethod ast.
+	patternArgs := deprecatedAST arguments collect: [:each | each copy ].
+	^OCMessageNode 
+		receiver: OCVariableNode selfNode
+		selector: deprecatedAST selector 
+		arguments: patternArgs
 ]
 
 { #category : 'handling' }
@@ -41,13 +47,12 @@ BPatternDeprecation >> replacementBlock [
 BPatternDeprecation >> replacementBlock: blockToCallNewAPI [
 
 	replacementBlock := blockToCallNewAPI.
-	rule := replacementBlock bpattern.
-	self explanation: 'Use ' , replacementBlock printString , ' instead'
+	rule := replacementBlock bpattern
 ]
 
 { #category : 'handling' }
 BPatternDeprecation >> transform [
-	| node aMethod rewrite rewrittenNode |
+	| node aMethod rewrittenNode |
 	self rewriterClass ifNil:[ ^ self ].
 	
 	aMethod := self contextOfSender homeMethod.	
@@ -58,8 +63,7 @@ BPatternDeprecation >> transform [
 	
 	node := self contextOfSender sourceNodeExecuted.
 	RecursionStopper during: [
-		rewrite := self buildBRewrite.
-		rewrittenNode := rewrite rewriteAST: node.
+		rewrittenNode := self buildBRewrite rewriteAST: node.
 		node replaceWith: rewrittenNode.
 		aMethod origin
 			compile: aMethod ast formattedCode
