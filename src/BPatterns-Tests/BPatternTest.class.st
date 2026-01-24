@@ -98,6 +98,31 @@ BPatternTest >> testComparisonWithFilters [
 ]
 
 { #category : 'tests' }
+BPatternTest >> testComparisonWithPatternModifiers [
+	
+	| bpattern anyRcv anyArg bpattern2 |
+	bpattern := [ anyRcv anyMessage: anyArg ] bpattern.
+	
+	bpattern2 := [ anyRcv anyMessage: anyArg ] bpattern with: [ anyRcv ] -> [ :pattern | pattern beLiteral ].
+	self deny: bpattern = bpattern2.
+	
+	bpattern2 := [ anyRcv anyMessage: anyArg ] bpattern with: [ anyRcv ] -> [ :pattern | pattern beVariable ].
+	self deny: bpattern = bpattern2.
+	
+	bpattern2 := [ anyRcv anyMessage: anyArg ] bpattern 
+						with: [ anyRcv ] -> [ :pattern | pattern beStatement ].
+	self deny: bpattern = bpattern2.
+	
+	bpattern2 := [ anyRcv anyMessage: anyArg ] bpattern 
+						with: #anyMessage: -> [ :pattern | pattern beSelectorList ].
+	self deny: bpattern = bpattern2.
+	
+bpattern2 := [ anyRcv anyMessage: anyArg ] bpattern 
+						with: #anyMessage: -> [ :pattern | pattern beCascadeList ].
+	self deny: bpattern = bpattern2.
+]
+
+{ #category : 'tests' }
 BPatternTest >> testConfigurationMultipleTimesAfterApply [
 	
 	| bpattern rcv arg  pattern |

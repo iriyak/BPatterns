@@ -23,6 +23,8 @@ Class {
 BPatternMessageNode >> = anObject [
 	super = anObject ifFalse: [ ^false ].
 	
+	(isList = anObject isSelectorList and: [ isCascadeList = anObject isCascadeList ]) ifFalse: [ ^false ].
+	
 	filters size = anObject filters size ifFalse: [^false ].
 	filters with: anObject filters do: [:my :their |
 		my compiledBlock = their compiledBlock ifFalse: [^false ]
@@ -90,7 +92,9 @@ BPatternMessageNode >> filters [
 
 { #category : 'comparing' }
 BPatternMessageNode >> hash [
-	^filters inject: super hash into: [:result :each | 
+	| flagsHash |
+	flagsHash := isList hash bitXor: isCascadeList hash.
+	^filters inject: (super hash bitXor: flagsHash) into: [:result :each | 
 		each compiledBlock hash bitXor: result hash ]
 ]
 
@@ -100,6 +104,11 @@ BPatternMessageNode >> initialize [
 
 	filters := #().
 	patternKeywords := Set new
+]
+
+{ #category : 'accessing' }
+BPatternMessageNode >> isCascadeList [
+	^isCascadeList
 ]
 
 { #category : 'matching' }

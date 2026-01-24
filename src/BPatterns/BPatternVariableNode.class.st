@@ -20,6 +20,11 @@ Class {
 BPatternVariableNode >> = anObject [
 	super = anObject ifFalse: [ ^false ].
 	
+	(recurseInto = anObject recurseInto and: [ 
+		isList = anObject isList and: [ 
+			isLiteral = anObject isLiteralNode and: [
+				isStatement = anObject isStatement and: [ 
+					isAnything = anObject isAnything ]]]]) ifFalse: [ ^false ].	
 	filters size = anObject filters size ifFalse: [ ^false ].
 	filters with: anObject filters do: [:my :their |
 		my compiledBlock = their compiledBlock ifFalse: [ ^false ]
@@ -153,15 +158,37 @@ BPatternVariableNode >> configureDefaults [
 	But it should be a deeper analysys up to the root of the pattern AST"
 ]
 
+{ #category : 'matching' }
+BPatternVariableNode >> copyInContext: aDictionary [
+	 
+	^ (self isList and: [ self isStatement ])
+		ifTrue: [ self copyList: (self findReplacementInContext: aDictionary) inContext: aDictionary ]
+		ifFalse: [ (self findReplacementInContext: aDictionary) copy ]
+]
+
 { #category : 'accessing' }
 BPatternVariableNode >> filters [
 
 	^ filters
 ]
 
+{ #category : 'matching' }
+BPatternVariableNode >> findReplacementInContext: aDictionary [
+	
+	aDictionary keysAndValuesDo: [:pattern :replacement |
+		(pattern isString not and: [ pattern isVariable ]) ifTrue: [ 
+			pattern name = name ifTrue: [ ^replacement ]	
+		 ]	
+	].
+	^KeyNotFound signalFor: self
+]
+
 { #category : 'comparing' }
 BPatternVariableNode >> hash [
-	^filters inject: super hash into: [:result :each | 
+ 	| flagsHash |
+	flagsHash := ((((recurseInto hash bitXor: isList hash) bitXor: isLiteral hash) 
+							bitXor: isStatement hash) bitXor: isAnything hash).
+	^filters inject: (super hash bitXor: flagsHash) into: [:result :each | 
 		each compiledBlock hash bitXor: result hash ]
 ]
 

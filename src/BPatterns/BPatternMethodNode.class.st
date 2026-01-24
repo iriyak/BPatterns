@@ -51,6 +51,8 @@ BPatternMethodNode class >> selector: aSymbol keywordsPositions: positionList ar
 BPatternMethodNode >> = anObject [
 	super = anObject ifFalse: [ ^false ].
 	
+	isList = anObject isSelectorList ifFalse: [ ^false ].
+	
 	filters size = anObject filters size ifFalse: [ ^false ].
 	filters with: anObject filters do: [:my :their |
 		my compiledBlock = their compiledBlock ifFalse: [ ^false ]
@@ -127,7 +129,7 @@ BPatternMethodNode >> filters [
 
 { #category : 'comparing' }
 BPatternMethodNode >> hash [
-	^filters inject: super hash into: [:result :each | 
+	^filters inject: (super hash bitXor: isList hash) into: [:result :each | 
 		each compiledBlock hash bitXor: result hash ]
 ]
 
