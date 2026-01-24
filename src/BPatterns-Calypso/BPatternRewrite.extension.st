@@ -4,7 +4,7 @@ Extension { #name : 'BPatternRewrite' }
 BPatternRewrite >> changeForMethod: aMethod [
 	| rewrittenAST rbClass |
 	rewrittenAST := self rewriteMethod: aMethod.
-	rbClass := RBClass existingNamed: aMethod methodClass name model: RBNamespace new.
+	rbClass := RBNamespace new classNamed: aMethod methodClass name.
 	^rbClass compileTree: rewrittenAST
 ]
 
