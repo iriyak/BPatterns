@@ -5,7 +5,9 @@
 [![Pharo 13](https://img.shields.io/badge/Pharo-13-informational)](https://pharo.org)
 [![Pharo 14-alpha](https://img.shields.io/badge/Pharo-alpha-informational)](https://pharo.org)
 
-Scripting tool to search and rewrite the system using simple code examples defined by blocks (**B** is for block patterns). It is based on the original Smalltalk rewrite engine but it does not require special syntax. 
+Scripting tool to search and rewrite the system using simple code examples defined by blocks (**B** is for block patterns). No special syntax required.
+
+It is based on the original Smalltalk rewrite engine invented by John Brant and Don Roberts in their work on the Refactoring Browser (see *“A Refactoring Tool for Smalltalk”, 1997*). 
 
 ## Installation
 
@@ -129,7 +131,7 @@ Patterns can be configured to match a particular type of variables:
 <img width="1010" height="505" alt="Screenshot 2026-01-08 at 21 47 13" src="https://github.com/user-attachments/assets/36b863a8-dda3-4759-8a67-c686a08414e6" />
 
 
-And you can specify an arbitraty block filter using **#where:** message:
+And you can specify an arbitrary block filter using **#where:** message:
 
 ```Smalltalk
 	| anyVar anyBlock |
@@ -360,4 +362,4 @@ The result of **#bmethod** is an instance of `BPattern` and therefore it can be 
 		[[ self anyMessage ] -> [ [ stmts ] repeat ]] bmethod
 	] brewrite
 ```
-Here is a rewrite example which will find a simple recursion and replace it with a loop. The recursive call can be any kind of message send with any number of arguments.
+This rewrite example will find a simple recursion and replace it with a loop. The recursive call can be any kind of message send with any number of arguments.
