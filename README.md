@@ -23,8 +23,8 @@ Metacello new
 BPatterns can be created using **#bpattern** message to a pattern block:
 
 ```Smalltalk
-	| any anyBlock |
-	[ any isNil ifTrue: anyBlock ] bpattern
+	| any any2 |
+	[ any isNil ifTrue: any2 ] bpattern
 ```
 
 Once you have a `BPattern` you can browse the system to find all matching methods:
