@@ -82,7 +82,7 @@ BPatternDeprecation >> buildDeprecatedMessageNode [
 	patternArgs := deprecatedAST arguments collect: [:each | each copy ].
 	^OCMessageNode 
 		receiver: OCVariableNode selfNode
-		selector: deprecatedAST selector 
+		selector: (OCSelectorNode value: deprecatedAST selector) 
 		arguments: patternArgs
 ]
 

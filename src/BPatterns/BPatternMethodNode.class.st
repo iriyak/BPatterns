@@ -111,7 +111,7 @@ BPatternMethodNode >> copyInContext: aDictionary [
 		ifTrue: [ (aDictionary at: self selector, '_args') ]
 		ifFalse: [ self arguments ].			
 	^ OCMethodNode new
-		selector: keywordSelector;
+		selector: keywordSelector asSymbol;
 		arguments: (self copyList: args inContext: aDictionary );
 		pragmas: (self pragmas isEmpty
 			ifTrue: [ aDictionary at: '-pragmas-' ifAbsent: [ #() ] ]

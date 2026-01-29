@@ -80,7 +80,7 @@ BPatternMessageNode >> copyInContext: aDictionary [
 		ifFalse: [ self arguments ].
 	^ OCMessageNode
 		receiver: (self receiver copyInContext: aDictionary)
-		selector: keywordSelector
+		selector: (OCSelectorNode value: keywordSelector asSymbol)
 		arguments: (self copyList: args inContext: aDictionary)
 ]
 
