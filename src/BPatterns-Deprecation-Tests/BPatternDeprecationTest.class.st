@@ -1,23 +1,23 @@
 Class {
-	#name : 'BPatternDeprecationTests',
+	#name : 'BPatternDeprecationTest',
 	#superclass : 'TestCase',
 	#category : 'BPatterns-Deprecation-Tests',
 	#package : 'BPatterns-Deprecation-Tests'
 }
 
 { #category : 'deprecated examples' }
-BPatternDeprecationTests >> deprecatedMessageWithArg: argExample1 and: argExample2 [
+BPatternDeprecationTest >> deprecatedMessageWithArg: argExample1 and: argExample2 [
 
 	^self deprecatedBy: [ self newMessageWith: argExample1 ]
 ]
 
 { #category : 'deprecated examples' }
-BPatternDeprecationTests >> newMessageWith: anArgument [
+BPatternDeprecationTest >> newMessageWith: anArgument [
 	^anArgument printString
 ]
 
 { #category : 'deprecated examples' }
-BPatternDeprecationTests >> rewrittenSenderOfDeprecatedMessage [ 
+BPatternDeprecationTest >> rewrittenSenderOfDeprecatedMessage [ 
 	
 	| one result |
 	one := 1.
@@ -26,7 +26,7 @@ BPatternDeprecationTests >> rewrittenSenderOfDeprecatedMessage [
 ]
 
 { #category : 'deprecated examples' }
-BPatternDeprecationTests >> senderOfDeprecatedMessage [ 
+BPatternDeprecationTest >> senderOfDeprecatedMessage [ 
 	
 	| one result |
 	one := 1.
@@ -35,7 +35,7 @@ BPatternDeprecationTests >> senderOfDeprecatedMessage [
 ]
 
 { #category : 'tests' }
-BPatternDeprecationTests >> testDeprecationExplanation [
+BPatternDeprecationTest >> testDeprecationExplanation [
 
 	| deprecation |
 	[ self senderOfDeprecatedMessage ] on: Deprecation do: [ :err | deprecation := err ].
@@ -44,7 +44,7 @@ BPatternDeprecationTests >> testDeprecationExplanation [
 ]
 
 { #category : 'tests' }
-BPatternDeprecationTests >> testDeprecationRewritePatterns [
+BPatternDeprecationTest >> testDeprecationRewritePatterns [
 
 	| deprecation deprecationRewrite searchPatternAST deprecatedMethodAST rewritePatternAST |
 	[ self senderOfDeprecatedMessage ] on: Deprecation do: [ :err | deprecation := err ].
@@ -67,7 +67,7 @@ BPatternDeprecationTests >> testDeprecationRewritePatterns [
 ]
 
 { #category : 'tests' }
-BPatternDeprecationTests >> testDeprecationTransformation [
+BPatternDeprecationTest >> testDeprecationTransformation [
 	| rewrittenAST expected actual |
 	self skip. "manual test to verify the rewritten method"
 	

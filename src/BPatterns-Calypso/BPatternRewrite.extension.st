@@ -1,6 +1,6 @@
 Extension { #name : 'BPatternRewrite' }
 
-{ #category : '*BPatterns-Calypso' }
+{ #category : '*BPatterns-RewritePreview' }
 BPatternRewrite >> changeForMethod: aMethod [
 	| rewrittenAST rbClass |
 	rewrittenAST := self rewriteMethod: aMethod.
@@ -8,11 +8,10 @@ BPatternRewrite >> changeForMethod: aMethod [
 	^rbClass compileTree: rewrittenAST
 ]
 
-{ #category : '*BPatterns-Calypso' }
+{ #category : '*BPatterns-RewritePreview' }
 BPatternRewrite >> changeForMethods: methods [
 	| changes |
-	changes := OrderedCollection new.
-	methods do: [:each | changes add: (self changeForMethod: each) ].
+	changes := methods collect: [:each | self changeForMethod: each ].
 	^RBCompositeRefactoryChange new 
 		changes: changes; 
 		yourself

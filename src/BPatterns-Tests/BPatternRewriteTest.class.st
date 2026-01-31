@@ -427,7 +427,7 @@ BPatternRewriteTest >> testRewriteMethodForIfNilRule [
 
 	| any |
 	self 
-		rewriteMethod: ##isNilIfFalseWith:
+		rewriteMethod: #isNilIfFalseWith:
 		by:  [
 			[ any isNil ifFalse: [ any printString ]] -> [ any ifNotNil: [ any printString ]]
 		]

@@ -75,28 +75,6 @@ BPatternRewrite >> displayStringOn: aStream [
 	aStream nextPutAll: ' ]'
 ]
 
-{ #category : 'rewriting' }
-BPatternRewrite >> preview [
-	| methods |
-	methods := searchPattern users.
-	^self previewForMethods: methods
-]
-
-{ #category : 'rewriting' }
-BPatternRewrite >> previewForClass: aClass [
-	| methods |
-	methods := searchPattern usersInClass: aClass.
-	^self previewForMethods: methods
-]
-
-{ #category : 'rewriting' }
-BPatternRewrite >> previewForMethods: methods [
-	| changes preview |
-	changes := self changeForMethods: methods.
-	preview := StRefactoringPreviewPresenter for: changes scopes: {ClyNavigationEnvironment currentImageScope}.
-	preview openModal
-]
-
 { #category : 'printing' }
 BPatternRewrite >> printOn: aStream [
 	super printOn: aStream.
