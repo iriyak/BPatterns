@@ -9,7 +9,7 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     strategy:
       matrix:
-        smalltalk: [ Pharo64-13, Pharo64-alpha ]
+        smalltalk: [ Pharo64-13 ]
     name: ${{ matrix.smalltalk }}
     steps:
       - uses: actions/checkout@v4
