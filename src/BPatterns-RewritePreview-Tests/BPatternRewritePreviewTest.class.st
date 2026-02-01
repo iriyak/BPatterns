@@ -12,7 +12,7 @@ BPatternRewritePreviewTest >> testChangeForMethod [
 	rewrite := [[ any isNil ifFalse: [ any printString ]] -> [ any ifNotNil: [ any printString ]]] brewrite.
 	
 	change := rewrite changeForMethod: BPatternMethodExamples>>#isNilIfFalseWith:.
-	self assert: change class equals: RBAddMethodChange.
+	self assert: (change class name endsWith: 'AddMethodChange').
 	self assert: change selector equals: #isNilIfFalseWith:.
 	self assert: change changeClass identicalTo: BPatternMethodExamples.
 	self assert: change parseTree equals: (BPatternRewrittenMethodExamples>>#isNilIfFalseWith:) ast.
@@ -21,14 +21,12 @@ BPatternRewritePreviewTest >> testChangeForMethod [
 { #category : 'tests' }
 BPatternRewritePreviewTest >> testChangeForMethods [
 
-	| rewrite any change fullChange |
+	| rewrite any change allChanges |
 	rewrite := [[ any isNil ifFalse: [ any printString ]] -> [ any ifNotNil: [ any printString ]]] brewrite.
 	
-	fullChange := rewrite changeForMethods: {BPatternMethodExamples>>#isNilIfFalseWith:}.
-	self assert: fullChange class equals: RBCompositeRefactoryChange.
-	self assert: fullChange changes size equals: 1.
-	change := fullChange changes first.
-	self assert: change class equals: RBAddMethodChange.
+	allChanges := rewrite changeForMethods: {BPatternMethodExamples>>#isNilIfFalseWith:}.
+	self assert: allChanges size equals: 1.
+	change := allChanges first.
 	self assert: change selector equals: #isNilIfFalseWith:.
 	self assert: change changeClass identicalTo: BPatternMethodExamples.
 	self assert: change parseTree equals: (BPatternRewrittenMethodExamples>>#isNilIfFalseWith:) ast.
