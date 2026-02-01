@@ -10,9 +10,7 @@ BPatternRewrite >> changeForMethod: aMethod [
 
 { #category : '*BPatterns-RewritePreview' }
 BPatternRewrite >> changeForMethods: methods [
-	| changes |
-	changes := methods collect: [:each | self changeForMethod: each ].
-	^ changes
+	^methods collect: [:each | self changeForMethod: each ]
 ]
 
 { #category : '*BPatterns-RewritePreview' }
