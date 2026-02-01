@@ -14,26 +14,6 @@ BPatternRewrite >> changeForMethods: methods [
 ]
 
 { #category : '*BPatterns-RewritePreview' }
-BPatternRewrite >> openChangeBrowserOn: changes [
-	"New Pharo 14"
-	| browserClass preview |
-	browserClass := self class environment at: #StChangesBrowserPresenter.
-	preview := browserClass changes: changes.
-	^preview openModal
-]
-
-{ #category : '*BPatterns-RewritePreview' }
-BPatternRewrite >> openRefactoringPreviewFor: changes [
-	"Old Pharo 13"
-	| preview composite |
-	composite := (self class environment at: #RBCompositeRefactoryChange) new 
-						changes: changes; 
-						yourself.
-	preview := StRefactoringPreviewPresenter for: composite.
-	^preview openModal
-]
-
-{ #category : '*BPatterns-RewritePreview' }
 BPatternRewrite >> preview [
 	| methods |
 	methods := searchPattern users.
@@ -49,9 +29,8 @@ BPatternRewrite >> previewForClass: aClass [
 
 { #category : '*BPatterns-RewritePreview' }
 BPatternRewrite >> previewForMethods: methods [
-	| changes |
+	| changes preview |
 	changes := self changeForMethods: methods.
-	^(self class environment includesKey: #StChangesBrowserPresenter) 
-		ifTrue: [ self openChangeBrowserOn: changes ]
-		ifFalse: [ self openRefactoringPreviewFor: changes ]
+	preview := StChangesBrowserPresenter changes: changes.
+	^preview openModal
 ]
