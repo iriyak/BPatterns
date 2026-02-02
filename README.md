@@ -5,7 +5,7 @@
 [![Pharo 13](https://img.shields.io/badge/Pharo-13-informational)](https://pharo.org)
 [![Pharo 14-alpha](https://img.shields.io/badge/Pharo-alpha-informational)](https://pharo.org)
 
-Scripting tool to search and rewrite the system using simple code examples defined by blocks (**B** is for block patterns). No special syntax required.
+Scripting tool to search and rewrite the system using simple code examples defined by blocks (**B** is for block). No special syntax required.
 
 It is based on the original Smalltalk rewrite engine invented by John Brant and Don Roberts in their work on the Refactoring Browser (see *“A Refactoring Tool for Smalltalk”, 1997*). 
 
