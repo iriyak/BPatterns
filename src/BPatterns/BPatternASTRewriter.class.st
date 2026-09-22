@@ -4,7 +4,7 @@ For BPatterns we do not need a separate #argumentSearches as it is done for the 
 "
 Class {
 	#name : 'BPatternASTRewriter',
-	#superclass : 'OCParseTreeRewriter',
+	#superclass : 'RBParseTreeRewriter',
 	#category : 'BPatterns',
 	#package : 'BPatterns'
 }

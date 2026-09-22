@@ -6,7 +6,7 @@ I am used by BPattern class to build the final #patternAST instance from the giv
 "
 Class {
 	#name : 'BPatternASTBuilder',
-	#superclass : 'OCProgramNodeVisitor',
+	#superclass : 'RBProgramNodeVisitor',
 	#instVars : [
 		'patternConfigs',
 		'collectedSelectors'

@@ -10,7 +10,7 @@ Particularly #performOn: method uses new recursion search message #recusivelySea
 "
 Class {
 	#name : 'BPatternReplaceRule',
-	#superclass : 'OCStringReplaceRule',
+	#superclass : 'RBStringReplaceRule',
 	#category : 'BPatterns',
 	#package : 'BPatterns'
 }
@@ -32,8 +32,8 @@ BPatternReplaceRule >> replaceTree: anAST [
 	replaceTree := anAST.
 	searchTree isSequence = replaceTree isSequence
 		ifFalse: [ searchTree isSequence
-				ifTrue: [ replaceTree := OCSequenceNode statements: (Array with: replaceTree) ]
-				ifFalse: [ searchTree := OCSequenceNode statements: (Array with: searchTree) ] ]
+				ifTrue: [ replaceTree := RBSequenceNode statements: (Array with: replaceTree) ]
+				ifFalse: [ searchTree := RBSequenceNode statements: (Array with: searchTree) ] ]
 ]
 
 { #category : 'accessing' }

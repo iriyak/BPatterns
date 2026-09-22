@@ -177,7 +177,7 @@ BPatternTest >> testFromBMethodWithConfiguredKeywordPattern [
 	self assert: bpattern patternAST patternKeywords asArray equals: #(#patternPart:).
 	self assert: bpattern patternAST selector equals: #patternPart:nonPatternPart:.
 	self assert: bpattern patternAST argumentNames equals: #('anyArg' 'anyArg2').
-	self assert: bpattern patternAST body class equals: OCSequenceNode.
+	self assert: bpattern patternAST body class equals: RBSequenceNode.
 	allVarNodes :=  bpattern patternAST variableNodes.
 	patternVarNodes := allVarNodes select: [:each | #('anyArg' 'anyArg2') includes: each name ].
 	self assert: patternVarNodes notEmpty.
@@ -229,7 +229,7 @@ BPatternTest >> testFromBMethodWithDefaultKeywordPattern [
 	self assert: bpattern patternAST patternKeywords asArray equals: #('anyMessage:').
 	self assert: bpattern patternAST selector equals: #anyMessage:nonPatternPart:.
 	self assert: bpattern patternAST argumentNames equals: #('anyArg' 'anyArg2').
-	self assert: bpattern patternAST body class equals: OCSequenceNode.
+	self assert: bpattern patternAST body class equals: RBSequenceNode.
 	allVarNodes :=  bpattern patternAST variableNodes.
 	patternVarNodes := allVarNodes select: [:each | #('anyArg' 'anyArg2') includes: each name ].
 	self assert: patternVarNodes notEmpty.
@@ -260,7 +260,7 @@ BPatternTest >> testFromBMethodWithMultipleStatements [
 	bpattern := [[ self someMessage: arg ] -> [ stmps.  ^arg printString ]] bmethod.
 	
 	self assert: bpattern class equals: BPattern.
-	self assert: bpattern patternAST body class equals: OCSequenceNode.
+	self assert: bpattern patternAST body class equals: RBSequenceNode.
 	self assert: bpattern patternAST body statements size equals: 2.
 ]
 
@@ -278,7 +278,7 @@ BPatternTest >> testFromBMethodWithoutSelectorPatterns [
 	self assert: bpattern patternAST body temporaries size equals: 1.
 	self assert: bpattern patternAST body temporaries first isPatternNode.
 	self assert: bpattern patternAST body temporaries first isList.
-	self assert: bpattern patternAST body class equals: OCSequenceNode.
+	self assert: bpattern patternAST body class equals: RBSequenceNode.
 	allVarNodes :=  bpattern patternAST variableNodes.
 	patternVarNodes := allVarNodes select: [:each | each name = 'anyArg' ].
 	self assert: patternVarNodes notEmpty.

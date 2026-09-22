@@ -10,7 +10,7 @@ See the package comment for the full details about the selector pattern configur
 "
 Class {
 	#name : 'BPatternMethodNode',
-	#superclass : 'OCPatternMethodNode',
+	#superclass : 'RBPatternMethodNode',
 	#instVars : [
 		'patternKeywords',
 		'filters'
@@ -110,7 +110,7 @@ BPatternMethodNode >> copyInContext: aDictionary [
 	args := self isSelectorList
 		ifTrue: [ (aDictionary at: self selector, '_args') ]
 		ifFalse: [ self arguments ].			
-	^ OCMethodNode new
+	^ RBMethodNode new
 		selector: keywordSelector asSymbol;
 		arguments: (self copyList: args inContext: aDictionary );
 		pragmas: (self pragmas isEmpty

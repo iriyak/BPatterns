@@ -10,7 +10,7 @@ See the package comment for the full details about the selector pattern configur
 "
 Class {
 	#name : 'BPatternMessageNode',
-	#superclass : 'OCPatternMessageNode',
+	#superclass : 'RBPatternMessageNode',
 	#instVars : [
 		'patternKeywords',
 		'filters'
@@ -78,9 +78,9 @@ BPatternMessageNode >> copyInContext: aDictionary [
 	args := self isSelectorList
 		ifTrue: [ (aDictionary at: self selector, '_args') ]
 		ifFalse: [ self arguments ].
-	^ OCMessageNode
+	^ RBMessageNode
 		receiver: (self receiver copyInContext: aDictionary)
-		selector: (OCSelectorNode value: keywordSelector asSymbol)
+		selector: (RBSelectorNode value: keywordSelector asSymbol)
 		arguments: (self copyList: args inContext: aDictionary)
 ]
 

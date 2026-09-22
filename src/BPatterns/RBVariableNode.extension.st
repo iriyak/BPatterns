@@ -1,11 +1,11 @@
-Extension { #name : 'OCVariableNode' }
+Extension { #name : 'RBVariableNode' }
 
 { #category : '*BPatterns' }
-OCVariableNode >> bePatternNode [
+RBVariableNode >> bePatternNode [
 	| patternNode |
 	patternNode := BPatternVariableNode named: name start: start.
-	patternNode 
-		parent: parent; 
+	patternNode
+		parent: parent;
 		variable: variable.
 	patternNode configureDefaults.
 	patternNode become: self

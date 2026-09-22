@@ -10,7 +10,7 @@ Particularly #performOn: method uses new recursion search message #recusivelySea
 "
 Class {
 	#name : 'BPatternSearchRule',
-	#superclass : 'OCSearchRule',
+	#superclass : 'RBSearchRule',
 	#category : 'BPatterns',
 	#package : 'BPatterns'
 }

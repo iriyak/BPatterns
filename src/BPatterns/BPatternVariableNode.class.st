@@ -8,7 +8,7 @@ See the package comment for the full details about the variable pattern configur
 "
 Class {
 	#name : 'BPatternVariableNode',
-	#superclass : 'OCPatternVariableNode',
+	#superclass : 'RBPatternVariableNode',
 	#instVars : [
 		'filters'
 	],

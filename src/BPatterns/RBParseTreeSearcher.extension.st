@@ -1,7 +1,7 @@
-Extension { #name : 'OCParseTreeSearcher' }
+Extension { #name : 'RBParseTreeSearcher' }
 
 { #category : '*BPatterns' }
-OCParseTreeSearcher >> recusivelySearchInContextExcept: aNode [
+RBParseTreeSearcher >> recusivelySearchInContextExcept: aNode [
 	"We need to save the matched context since the other searches might overwrite it."
 
 	| oldContext |

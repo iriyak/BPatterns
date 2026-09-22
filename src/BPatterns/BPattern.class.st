@@ -122,7 +122,7 @@ BPattern >> addConfig: aPatternConfig [
 { #category : 'converting' }
 BPattern >> adoptToSequenceNode [ 
 	patternAST isSequence ifFalse: [ 
-		patternAST := OCSequenceNode statements: (Array with: patternAST)]
+		patternAST := RBSequenceNode statements: (Array with: patternAST)]
 ]
 
 { #category : 'private' }
@@ -234,7 +234,7 @@ BPattern >> rewriteAST: originalAST with: rewritePattern [
 BPattern >> scanAST: anAST do: nodeBlock [
 	| searcher |
 	
-	searcher := OCParseTreeSearcher new.
+	searcher := RBParseTreeSearcher new.
 	searcher addRule: (BPatternSearchRule new 
 			searchTree: self patternAST;
 			answerBlock: [ :aNode :answer | nodeBlock cull: aNode cull: searcher context ]).

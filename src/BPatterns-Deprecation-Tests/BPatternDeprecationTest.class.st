@@ -52,7 +52,7 @@ BPatternDeprecationTest >> testDeprecationRewritePatterns [
 	self assert: deprecation class equals: BPatternDeprecation.
 	deprecationRewrite := deprecation buildBRewrite.
 	searchPatternAST := deprecationRewrite searchPattern patternAST.
-	self assert: searchPatternAST class equals: OCMessageNode.
+	self assert: searchPatternAST class equals: RBMessageNode.
 	self assert: searchPatternAST receiver isPatternNode.
 	self assert: searchPatternAST receiver name equals: #self.
 	deprecatedMethodAST := (self class >> #deprecatedMessageWithArg:and:) ast.

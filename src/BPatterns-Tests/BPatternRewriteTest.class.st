@@ -20,7 +20,7 @@ BPatternRewriteTest >> expressionASTFrom: aBlock [
 	expressionAST := (fullAST statements size == 1 and: [ fullAST temporaries isEmpty ])
 		  ifTrue: [ fullAST statements first ]
 		  ifFalse: [ fullAST body ].
-	^OCSequenceNode statements: (Array with: expressionAST)
+	^RBSequenceNode statements: (Array with: expressionAST)
 ]
 
 { #category : 'helpers' }
