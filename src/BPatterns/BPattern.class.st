@@ -154,6 +154,26 @@ BPattern >> displayStringOn: aStream [
 	aStream nextPutAll: patternAST formattedCode
 ]
 
+{ #category : 'as yet unclassified' }
+BPattern >> gtPatternASTFor: aView [
+	<gtView>
+	^ aView forward
+		title: 'PatternAST';
+		priority: 50;
+		object: [ self patternAST ];
+		view: #gtTreeFor:
+]
+
+{ #category : 'as yet unclassified' }
+BPattern >> gtUsersFor: aView [
+	<gtView>
+	^ aView forward
+		title: 'Users';
+		priority: 40;
+		object: [ self users ];
+		view: #gtItemsFor:
+]
+
 { #category : 'comparing' }
 BPattern >> hash [
 	^self patternAST hash
