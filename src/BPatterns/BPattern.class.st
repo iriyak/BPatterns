@@ -93,14 +93,22 @@ BPattern class >> fromAST: anASTNode [
 ]
 
 { #category : 'instance creation' }
-BPattern class >> fromBlock: definitionBlock [ 
-	| definitionAST patternAST |
-	definitionAST := definitionBlock sourceNode.
+BPattern class >> fromBlock: definitionBlock [
+	^ self fromBlockAST: definitionBlock sourceNode
+]
+
+{ #category : 'instance creation' }
+BPattern class >> fromBlockAST: definitionAST [
+	| patternAST |
 	patternAST := (definitionAST statements size == 1 and: [ definitionAST temporaries isEmpty ])
-		  ifTrue: [ definitionAST statements first ]
-		  ifFalse: [ definitionAST body ].
-	^self fromAST: patternAST
-	
+		ifTrue: [ definitionAST statements first ]
+		ifFalse: [ definitionAST body ].
+	^ self fromAST: patternAST
+]
+
+{ #category : 'instance creation' }
+BPattern class >> fromString: aString [
+	^ self fromBlockAST: (RBParser parseExpression: aString)
 ]
 
 { #category : 'comparing' }
