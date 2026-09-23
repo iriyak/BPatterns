@@ -163,6 +163,16 @@ BPattern >> displayStringOn: aStream [
 ]
 
 { #category : 'as yet unclassified' }
+BPattern >> gtMatchesFor: aView [
+	<gtView>
+	^ aView forward
+		title: 'Matches';
+		priority: 30;
+		object: [ GtSearchBPatternFilter bpattern: self ];
+		view: #gtItemsFor:
+]
+
+{ #category : 'as yet unclassified' }
 BPattern >> gtPatternASTFor: aView [
 	<gtView>
 	^ aView forward
@@ -170,16 +180,6 @@ BPattern >> gtPatternASTFor: aView [
 		priority: 50;
 		object: [ self patternAST ];
 		view: #gtTreeFor:
-]
-
-{ #category : 'as yet unclassified' }
-BPattern >> gtUsersFor: aView [
-	<gtView>
-	^ aView forward
-		title: 'Users';
-		priority: 40;
-		object: [ self users collect: [ :aMethod | BPatternMatch new bpattern: self; method: aMethod ] ];
-		view: #gtItemsFor:
 ]
 
 { #category : 'comparing' }
@@ -277,25 +277,15 @@ BPattern >> useDefaultConfigs [
 
 { #category : 'scanning' }
 BPattern >> users [
-
-	| result |
-	result := OrderedCollection new.
-	Smalltalk allClasses 
-		do:[:aClass| result addAll: (self usersInClass: aClass) ]
-		displayingProgress: 'Lookup for [', self displayString, ']'
-		every: 1000.
-	^result
+	^ (GtSearchBPatternFilter bpattern: self) contents
 ]
 
 { #category : 'scanning' }
 BPattern >> usersInClass: aClass [
-	
-	| result |
-	result := OrderedCollection new.
-	aClass methodsDo: [:each | 	(self matchesMethod: each) ifTrue: [ result add: each ]].
-	aClass class methodsDo: [:each | 	(self matchesMethod: each) ifTrue: [ result add: each ]].
-	^result
-
+	| scope |
+	scope := (GtSearchMethodsInClassFilter forClass: aClass)
+		| (GtSearchMethodsInClassFilter forClass: aClass class).
+	^ (scope & (GtSearchBPatternFilter bpattern: self)) contents
 ]
 
 { #category : 'initialization' }
