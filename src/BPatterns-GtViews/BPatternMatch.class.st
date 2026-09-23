@@ -35,7 +35,7 @@ BPatternMatch >> gtSourceCodeFor: aView [
 		priority: 10;
 		stencil: [ 
 			(GtPharoMethodCoder forMethod: method)
-				highlighter: (GtBPatternHighlighter new bpattern: bpattern);
+				highlighter: (GtBPatternHighlighter new bpattern: bpattern; method: method; yourself);
 				asExpandedOnlyElement ]
 ]
 

@@ -173,6 +173,16 @@ BPattern >> gtMatchesFor: aView [
 ]
 
 { #category : 'as yet unclassified' }
+BPattern >> gtMetricsFor: aView [
+	<gtView>
+	^ aView forward
+		title: 'Metrics';
+		priority: 40;
+		object: [ GtSearchBPatternFilter bpattern: self ];
+		view: #gtMetricsFor:
+]
+
+{ #category : 'as yet unclassified' }
 BPattern >> gtPatternASTFor: aView [
 	<gtView>
 	^ aView forward
