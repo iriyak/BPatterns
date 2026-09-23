@@ -170,7 +170,7 @@ BPattern >> gtUsersFor: aView [
 	^ aView forward
 		title: 'Users';
 		priority: 40;
-		object: [ self users ];
+		object: [ self users collect: [ :aMethod | BPatternMatch new bpattern: self; method: aMethod ] ];
 		view: #gtItemsFor:
 ]
 
