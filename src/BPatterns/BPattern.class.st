@@ -269,6 +269,27 @@ BPattern >> scanAST: anAST do: nodeBlock [
 	searcher executeTree: anAST
 ]
 
+{ #category : 'private' }
+BPattern >> uniqueMethodsFrom: methods [
+	| seenOrigins |
+	seenOrigins := Set new.
+	^ (methods select: [ :each |
+		(seenOrigins includes: each origin -> each selector)
+			ifTrue: [ false ]
+			ifFalse: [ seenOrigins add: each origin -> each selector. true ] ])
+		collect: [ :each | each origin >> each selector ]
+]
+
+{ #category : 'scanning' }
+BPattern >> uniqueUsers [
+	^ self uniqueMethodsFrom: self users
+]
+
+{ #category : 'scanning' }
+BPattern >> uniqueUsersInClass: aClass [
+	^ self uniqueMethodsFrom: (self usersInClass: aClass)
+]
+
 { #category : 'initialization' }
 BPattern >> useDefaultConfigs [
 	configs add: BPatternDefaultVarConfig new.
