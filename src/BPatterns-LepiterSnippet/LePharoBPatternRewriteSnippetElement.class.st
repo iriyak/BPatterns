@@ -110,8 +110,7 @@ LePharoBPatternRewriteSnippetElement >> rewritePreviewElement [
 	| asyncElement |
 	asyncElement := BrAsyncWidget new
 			matchParent;
-			stencil: [ ((self snippet executeRewriteInFilter: self searchFilter)
-					then: [ :obj | GtInspector forObject: obj ]) wait ].
+			stencil: [ GtInspector forObject: (self snippet executeRewriteInFilter: self searchFilter) ].
 	^ asyncElement
 ]
 
