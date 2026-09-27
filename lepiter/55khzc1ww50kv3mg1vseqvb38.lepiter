@@ -74,7 +74,8 @@
 					"uidString" : "QqR/9KSjREGcAnCiC6oWJQ=="
 				},
 				"search" : "[ any isNil ifTrue: any2 ]",
-				"replace" : ""
+				"replace" : "",
+				"scope" : "#(#('All Methods' '') )"
 			},
 			{
 				"__type" : "pharoSnippet",

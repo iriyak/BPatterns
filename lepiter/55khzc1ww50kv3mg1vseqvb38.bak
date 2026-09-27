@@ -101,14 +101,14 @@
 					"__type" : "time",
 					"time" : {
 						"__type" : "dateAndTime",
-						"dateAndTimeString" : "2026-09-27T22:19:47.629+09:00"
+						"dateAndTimeString" : "2026-09-27T22:32:03.478+09:00"
 					}
 				},
 				"uid" : {
 					"__type" : "uid",
 					"uidString" : "XJDkNCeLtkm1E5ekZA/dgw=="
 				},
-				"code" : "aFilter := GtSearchBPatternFilter bpattern: ([ anyRcv isNil ifTrue: anyBlock ] bpattern)"
+				"code" : "aFilter := GtSearchBPatternFilter\r\t\tbpattern: [ anyRcv isNil ifTrue: anyBlock ] bpattern"
 			},
 			{
 				"__type" : "bpatternRewrite",
@@ -142,7 +142,7 @@
 					"__type" : "uid",
 					"uidString" : "jD2rw6tiLEqBRd3SeJNWtA=="
 				},
-				"search" : "",
+				"search" : "[ any isNil ifTrue: any2 ]",
 				"replace" : ""
 			}
 		]
