@@ -40,6 +40,41 @@
 					"__type" : "textStyle"
 				},
 				"string" : "sample text snippet"
+			},
+			{
+				"__type" : "bpatternRewrite",
+				"children" : {
+					"__type" : "snippets",
+					"items" : [ ]
+				},
+				"createEmail" : {
+					"__type" : "email",
+					"emailString" : "<unknown>"
+				},
+				"createTime" : {
+					"__type" : "time",
+					"time" : {
+						"__type" : "dateAndTime",
+						"dateAndTimeString" : "2026-09-27T21:05:06.159+09:00"
+					}
+				},
+				"editEmail" : {
+					"__type" : "email",
+					"emailString" : "<unknown>"
+				},
+				"editTime" : {
+					"__type" : "time",
+					"time" : {
+						"__type" : "dateAndTime",
+						"dateAndTimeString" : "2026-09-27T21:05:06.159+09:00"
+					}
+				},
+				"uid" : {
+					"__type" : "uid",
+					"uidString" : "QqR/9KSjREGcAnCiC6oWJQ=="
+				},
+				"search" : "\t| any any2 |\r\n\t[ any isNil ifTrue: any2 ]",
+				"replace" : ""
 			}
 		]
 	},
@@ -62,12 +97,12 @@
 		"__type" : "time",
 		"time" : {
 			"__type" : "dateAndTime",
-			"dateAndTimeString" : "2026-09-27T18:55:17.347+09:00"
+			"dateAndTimeString" : "2026-09-27T18:56:24.501+09:00"
 		}
 	},
 	"pageType" : {
 		"__type" : "namedPage",
-		"title" : "Sample page"
+		"title" : "The first page of BPatterns database"
 	},
 	"uid" : {
 		"__type" : "uuid",
