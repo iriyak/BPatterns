@@ -75,6 +75,75 @@
 				},
 				"search" : "[ any isNil ifTrue: any2 ]",
 				"replace" : ""
+			},
+			{
+				"__type" : "pharoSnippet",
+				"children" : {
+					"__type" : "snippets",
+					"items" : [ ]
+				},
+				"createEmail" : {
+					"__type" : "email",
+					"emailString" : "<unknown>"
+				},
+				"createTime" : {
+					"__type" : "time",
+					"time" : {
+						"__type" : "dateAndTime",
+						"dateAndTimeString" : "2026-09-27T22:18:49.337+09:00"
+					}
+				},
+				"editEmail" : {
+					"__type" : "email",
+					"emailString" : "<unknown>"
+				},
+				"editTime" : {
+					"__type" : "time",
+					"time" : {
+						"__type" : "dateAndTime",
+						"dateAndTimeString" : "2026-09-27T22:32:03.478+09:00"
+					}
+				},
+				"uid" : {
+					"__type" : "uid",
+					"uidString" : "XJDkNCeLtkm1E5ekZA/dgw=="
+				},
+				"code" : "aFilter := GtSearchBPatternFilter\r\t\tbpattern: [ anyRcv isNil ifTrue: anyBlock ] bpattern"
+			},
+			{
+				"__type" : "bpatternRewrite",
+				"children" : {
+					"__type" : "snippets",
+					"items" : [ ]
+				},
+				"createEmail" : {
+					"__type" : "email",
+					"emailString" : "<unknown>"
+				},
+				"createTime" : {
+					"__type" : "time",
+					"time" : {
+						"__type" : "dateAndTime",
+						"dateAndTimeString" : "2026-09-27T22:31:38.197+09:00"
+					}
+				},
+				"editEmail" : {
+					"__type" : "email",
+					"emailString" : "<unknown>"
+				},
+				"editTime" : {
+					"__type" : "time",
+					"time" : {
+						"__type" : "dateAndTime",
+						"dateAndTimeString" : "2026-09-27T22:31:38.197+09:00"
+					}
+				},
+				"uid" : {
+					"__type" : "uid",
+					"uidString" : "jD2rw6tiLEqBRd3SeJNWtA=="
+				},
+				"search" : "[ any isNil ifTrue: any2 ]",
+				"replace" : ""
 			}
 		]
 	},
