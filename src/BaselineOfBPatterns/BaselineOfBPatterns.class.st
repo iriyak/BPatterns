@@ -9,7 +9,7 @@ Class {
 BaselineOfBPatterns >> baseline: spec [
 	<baseline>
 	spec for: #'common' do: [
-		spec 
+		spec
 			package: #'BPatterns';
 			package: #'BPatterns-Tests' with: [ spec requires: #('BPatterns') ];
 			package: #'BPatterns-Deprecation' with: [ spec requires: #('BPatterns') ];
@@ -27,4 +27,22 @@ BaselineOfBPatterns >> baseline: spec [
 			group: 'LepiterSnippetTests' with: #('BPatterns-LepiterSnippet-Tests');
 			group: 'default' with: #('Core' 'CoreTests' 'Tools' 'ToolsTests' 'GTViews' 'LepiterSnippet' 'LepiterSnippetTests').
 		].
+]
+
+{ #category : 'lepiter' }
+BaselineOfBPatterns class >> loadLepiter [
+	"Register this repository's lepiter/ folder as a directory of the default logical
+	 Lepiter database and reload it, so the BPatterns booklet shows up in Lepiter.
+	 Requires the repository to already be loaded into Iceberg (as 'BPatterns')."
+
+	IceRepository registry
+		detect: [ :aRepository | aRepository name = 'BPatterns' ]
+		ifFound: [ :aRepository |
+			| defaultDatabase currentProperties |
+			defaultDatabase := LeDatabasesRegistry defaultLogicalDatabase.
+			currentProperties := defaultDatabase properties.
+			currentProperties
+				addRegisteredDirectory: aRepository repositoryDirectory / 'lepiter'.
+			defaultDatabase reload ]
+		ifNone: [ self inform: 'Repository not found.' ]
 ]

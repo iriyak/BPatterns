@@ -22,6 +22,12 @@ Metacello new
   load: #('Core' 'CoreTests')
 ```
 
+This repository also ships a Lepiter booklet under `lepiter/` (development notes, and a live "BPattern rewrite" snippet demo — see below). Once the project is loaded via Iceberg, register it with your Lepiter database and open it from GT's Lepiter browser:
+
+```Smalltalk
+BaselineOfBPatterns loadLepiter
+```
+
 ## Overview — changes in this fork
 
 This fork was adapted to run on GT, and adds GT-specific tooling around the same `BPattern`/`BPatternRewrite` API described in the original README.
@@ -42,6 +48,7 @@ This fork was adapted to run on GT, and adds GT-specific tooling around the same
 - `GtSearchBPatternFilter` — a `GtSearchMethodsFilter` that lets a `BPattern` be composed into GT's search/scope pipeline (`&`, `|`, class/package scoping, etc.), with AST-match highlighting via `GtBPatternHighlighter`.
 - `String >> #gtBPatternMatches` and `BlockClosure >> #gtBPatternMatches` — one-line entry points that turn a pattern string or block straight into a live, spawnable `GtSearchBPatternFilter` object in GT.
 - A new **"BPattern rewrite" Lepiter snippet**: insert it into any Lepiter page to author a search/replace/scope BPattern rewrite right in your notes, run the search with the same highlighting as above, and preview the rewrite as a diff before applying it.
+- A `lepiter/` booklet (see Installation above) with development notes and a live demo of the snippet.
 
 ## Reference
 
