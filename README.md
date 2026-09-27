@@ -25,7 +25,7 @@ Metacello new
 This repository also ships a Lepiter booklet under `lepiter/` (development notes, and a live "BPattern rewrite" snippet demo — see below). Once the project is loaded via Iceberg, register it with your Lepiter database and open it from GT's Lepiter browser:
 
 ```Smalltalk
-BaselineOfBPatterns loadLepiter
+#BaselineOfBPatterns asClass loadLepiter
 ```
 
 ## Overview — changes in this fork
