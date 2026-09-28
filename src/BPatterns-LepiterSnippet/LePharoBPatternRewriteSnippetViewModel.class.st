@@ -20,15 +20,8 @@ LePharoBPatternRewriteSnippetViewModel >> snippetView [
 LePharoBPatternRewriteSnippetViewModel >> subscribeToSnippetModel [
 	super subscribeToSnippetModel.
 	self snippetModel weak
-		when: LePharoBPatternRewriteSnippetSearchChanged
-			send: #announce:
-			to: self;
-		when: LePharoBPatternRewriteSnippetReplaceChanged
-			send: #announce:
-			to: self;
-		when: LePharoBPatternRewriteSnippetScopeChanged
-			send: #announce:
-			to: self
+		when: LePharoBPatternRewriteSnippetSourceChanged send: #announce: to: self;
+		when: LePharoBPatternRewriteSnippetScopeChanged send: #announce: to: self
 ]
 
 { #category : 'as yet unclassified' }

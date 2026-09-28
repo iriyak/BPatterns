@@ -2,8 +2,7 @@ Class {
 	#name : 'LePharoBPatternRewriteSnippet',
 	#superclass : 'LeSnippet',
 	#instVars : [
-		'search',
-		'replace',
+		'source',
 		'scope'
 	],
 	#category : 'BPatterns-LepiterSnippet',
@@ -25,18 +24,13 @@ LePharoBPatternRewriteSnippet class >> description [
 
 { #category : 'as yet unclassified' }
 LePharoBPatternRewriteSnippet class >> empty [
-	^ self new
-		search: '';
-		replace: '';
-		scope: nil;
-		yourself
+	^ self new source: ''; scope: nil; yourself
 ]
 
 { #category : 'as yet unclassified' }
 LePharoBPatternRewriteSnippet class >> leJsonV3AttributeMapping [
 	^ super leJsonV3AttributeMapping
-		add: #search -> #search;
-		add: #replace -> #replace;
+		add: #source -> #source;
 		add: #scope -> #scope;
 		yourself
 ]
@@ -49,8 +43,7 @@ LePharoBPatternRewriteSnippet class >> leJsonV3Name [
 { #category : 'as yet unclassified' }
 LePharoBPatternRewriteSnippet class >> leJsonV4AttributeMapping [
 	^ super leJsonV4AttributeMapping
-		add: #search -> #search;
-		add: #replace -> #replace;
+		add: #source -> #source;
 		add: #scope -> #scope;
 		yourself
 ]
@@ -67,14 +60,12 @@ LePharoBPatternRewriteSnippet >> asSnippetViewModel [
 
 { #category : 'as yet unclassified' }
 LePharoBPatternRewriteSnippet >> bpattern [
-	^ BPattern fromString: self search
+	^ BPattern fromBlockAST: self searchBlockAST
 ]
 
 { #category : 'as yet unclassified' }
 LePharoBPatternRewriteSnippet >> bpatternRewrite [
-	^ BPatternRewrite
-		fromPattern: self bpattern
-		to: (BPattern fromString: self replace)
+	^ BPatternRewrite fromPattern: self bpattern to: self replacePattern
 ]
 
 { #category : 'as yet unclassified' }
@@ -86,12 +77,10 @@ LePharoBPatternRewriteSnippet >> canMoveToAnotherDatabase [
 LePharoBPatternRewriteSnippet >> contentAsString [
 	^ String
 		streamContents: [ :stream |
-			stream nextPutAll: 'BPatternRewrite:'.
+			stream nextPutAll: (self isRewrite ifTrue: [ 'BPatternRewrite:' ] ifFalse: [ 'BPattern:' ]).
 			stream
-				nextPutAll: 'search=';
-				print: (search ifNil: [ '' ]);
-				nextPutAll: '|replace=';
-				print: (replace ifNil: [ '' ]);
+				nextPutAll: 'source=';
+				print: (source ifNil: [ '' ]);
 				nextPutAll: '|scope=';
 				print: (scope ifNil: [ '' ]) ]
 ]
@@ -168,6 +157,14 @@ LePharoBPatternRewriteSnippet >> filterDescriptorsUsing: snippetContext [
 ]
 
 { #category : 'as yet unclassified' }
+LePharoBPatternRewriteSnippet >> isRewrite [
+	"Whether #source is structured as a rewrite ([ [search] -> [replace] ]) rather than a
+	 plain search pattern ([ search ])."
+
+	^ self rewriteMessageNode notNil
+]
+
+{ #category : 'as yet unclassified' }
 LePharoBPatternRewriteSnippet >> markdownOn: stream level: anInteger [
 	anInteger * 4 timesRepeat: [ stream nextPut: Character space ].
 	stream
@@ -185,6 +182,13 @@ LePharoBPatternRewriteSnippet >> markdownOn: stream level: anInteger [
 ]
 
 { #category : 'as yet unclassified' }
+LePharoBPatternRewriteSnippet >> parsedSourceNode [
+	"Parse #source as a Pharo expression. Answer nil if it does not parse (e.g. mid-edit)."
+
+	^ [ RBParser parseExpression: self source ] on: Error do: [ :e | nil ]
+]
+
+{ #category : 'as yet unclassified' }
 LePharoBPatternRewriteSnippet >> potentialMethodsInFilter: aFilter [
 	| scopeFilter |
 	scopeFilter := (aFilter ifNil: [ GtSearchImageMethodsFilter forAllMethods ])
@@ -193,18 +197,32 @@ LePharoBPatternRewriteSnippet >> potentialMethodsInFilter: aFilter [
 ]
 
 { #category : 'as yet unclassified' }
-LePharoBPatternRewriteSnippet >> replace [
-	^ replace
+LePharoBPatternRewriteSnippet >> replaceBlockAST [
+	"Only meaningful when #isRewrite; nil otherwise."
+
+	^ self rewriteMessageNode ifNotNil: [ :node | node arguments first ]
 ]
 
 { #category : 'as yet unclassified' }
-LePharoBPatternRewriteSnippet >> replace: aString [
-	replace := aString.
-	self
-		notifyAnnouncement: (LePharoBPatternRewriteSnippetReplaceChanged new
-				source: self;
-				snippet: self;
-				replace: aString)
+LePharoBPatternRewriteSnippet >> replacePattern [
+	"Only meaningful when #isRewrite."
+
+	^ BPattern fromBlockAST: self replaceBlockAST
+]
+
+{ #category : 'as yet unclassified' }
+LePharoBPatternRewriteSnippet >> rewriteMessageNode [
+	"If #source parses to [ [ search ] -> [ replace ] ], answer that -> RBMessageNode. Answer nil otherwise
+	 (a plain search-only pattern, or unparseable source)."
+
+	| node stmt |
+	node := self parsedSourceNode.
+	(node isNil or: [ node isBlock not ]) ifTrue: [ ^ nil ].
+	node statements size = 1 ifFalse: [ ^ nil ].
+	stmt := node statements first.
+	(stmt isMessage and: [ stmt selector = #-> ]) ifFalse: [ ^ nil ].
+	(stmt receiver isBlock and: [ stmt arguments first isBlock ]) ifFalse: [ ^ nil ].
+	^ stmt
 ]
 
 { #category : 'as yet unclassified' }
@@ -223,25 +241,26 @@ LePharoBPatternRewriteSnippet >> scope: aString [
 ]
 
 { #category : 'as yet unclassified' }
-LePharoBPatternRewriteSnippet >> search [
-	^ search
+LePharoBPatternRewriteSnippet >> searchBlockAST [
+	| rewriteNode |
+	rewriteNode := self rewriteMessageNode.
+	^ rewriteNode ifNil: [ self parsedSourceNode ] ifNotNil: [ rewriteNode receiver ]
 ]
 
 { #category : 'as yet unclassified' }
-LePharoBPatternRewriteSnippet >> search: aString [
-	search := aString.
-	self
-		notifyAnnouncement: (LePharoBPatternRewriteSnippetSearchChanged new
-				source: self;
-				snippet: self;
-				search: aString)
+LePharoBPatternRewriteSnippet >> source [
+	^ source
+]
+
+{ #category : 'as yet unclassified' }
+LePharoBPatternRewriteSnippet >> source: aString [
+	source := aString.
+	self announce: (LePharoBPatternRewriteSnippetSourceChanged new patternSource: aString)
 ]
 
 { #category : 'as yet unclassified' }
 LePharoBPatternRewriteSnippet >> storeOn: aStream [
-	aStream nextPutAll: '(LePharoBPatternRewriteSnippet new search: '.
-	self search storeOn: aStream.
-	aStream nextPutAll: '; replace: '.
-	self replace storeOn: aStream.
+	aStream nextPutAll: '(LePharoBPatternRewriteSnippet new source: '.
+	self source storeOn: aStream.
 	aStream nextPutAll: '; yourself)'
 ]

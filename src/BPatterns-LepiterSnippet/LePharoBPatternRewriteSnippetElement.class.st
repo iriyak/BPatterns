@@ -62,7 +62,7 @@ LePharoBPatternRewriteSnippetElement >> filterDescriptors [
 
 { #category : 'as yet unclassified' }
 LePharoBPatternRewriteSnippetElement >> initialize [
-	| searchEditor replaceEditor scopeElement filtersElement bpatternLabel |
+	| sourceEditor scopeElement filtersElement bpatternLabel buttonsRow |
 	super initialize.
 	rewriteElement := BrVerticalPane new.
 	rewriteElement padding: (BlInsets all: 5).
@@ -80,11 +80,15 @@ LePharoBPatternRewriteSnippetElement >> initialize [
 	filtersElement when: GtFiltersChangedEvent do: [ :event | self saveScope ].
 	scopeElement addChild: filtersElement as: #filtersElement.
 	rewriteElement addChild: scopeElement.
-	searchEditor := self createSourceEditor: #updateSearch.
-	rewriteElement addChild: searchEditor as: #searchEditor.
-	rewriteElement
+	sourceEditor := self createSourceEditor: #updateSource.
+	rewriteElement addChild: sourceEditor as: #sourceEditor.
+	buttonsRow := BrHorizontalPane new.
+	buttonsRow hFitContent.
+	buttonsRow vFitContent.
+	buttonsRow margin: (BlInsets top: 3 bottom: 3).
+	buttonsRow
 		addChild: (BrButton new
-				margin: (BlInsets top: 3 bottom: 10);
+				margin: (BlInsets right: 5);
 				beSmallSize;
 				aptitude: BrGlamorousButtonWithIconAptitude;
 				icon: BrGlamorousVectorIcons playinspect asElement;
@@ -92,19 +96,17 @@ LePharoBPatternRewriteSnippetElement >> initialize [
 				action: [ rewriteElement phlow
 						spawnObject: (self snippet executeSearchInFilter: self searchFilter) ])
 		as: #searchButton.
-	rewriteElement addChild: (self createLabel: 'Replace with:').
-	replaceEditor := self createSourceEditor: #updateReplace.
-	rewriteElement addChild: replaceEditor as: #replaceEditor.
-	rewriteElement
+	buttonsRow
 		addChild: (BrButton new
-				margin: (BlInsets top: 3 bottom: 3);
 				beSmallSize;
+				enabled: false;
 				aptitude: BrGlamorousButtonWithIconAptitude;
 				icon: BrGlamorousVectorIcons playinspect asElement;
 				label: 'Replace' asString;
 				action: [ rewriteElement phlow
 						spawnTool: (GtPhlowExplicitTool new stencil: [ self rewritePreviewElement ]) ])
 		as: #replaceButton.
+	rewriteElement addChild: buttonsRow.
 
 	"Float a small 'BPattern' badge in the top-right corner, the same technique
 	 LeExternalEvaluatedSnippetElement uses for its language/connection label,
@@ -127,14 +129,8 @@ LePharoBPatternRewriteSnippetElement >> initialize [
 { #category : 'as yet unclassified' }
 LePharoBPatternRewriteSnippetElement >> onSnippetViewModelChanged [
 	super onSnippetViewModelChanged.
-	self updateSearchEditor.
-	self updateReplaceEditor.
+	self updateSourceEditor.
 	self updateScope
-]
-
-{ #category : 'as yet unclassified' }
-LePharoBPatternRewriteSnippetElement >> replaceEditorDo: block [
-	rewriteElement childNamed: #replaceEditor ifFound: block
 ]
 
 { #category : 'as yet unclassified' }
@@ -183,11 +179,6 @@ LePharoBPatternRewriteSnippetElement >> scopeLabel [
 ]
 
 { #category : 'as yet unclassified' }
-LePharoBPatternRewriteSnippetElement >> searchEditorDo: block [
-	rewriteElement childNamed: #searchEditor ifFound: block
-]
-
-{ #category : 'as yet unclassified' }
 LePharoBPatternRewriteSnippetElement >> searchFilter [
 	| filters |
 	filters := OrderedCollection new.
@@ -216,6 +207,11 @@ LePharoBPatternRewriteSnippetElement >> snippetToolbar [
 ]
 
 { #category : 'as yet unclassified' }
+LePharoBPatternRewriteSnippetElement >> sourceEditorDo: block [
+	rewriteElement childNamed: #sourceEditor ifFound: block
+]
+
+{ #category : 'as yet unclassified' }
 LePharoBPatternRewriteSnippetElement >> styler [
 	| styler |
 	styler := GtCompositeSmaCCASTStyler forParser: GtPharoParser.
@@ -228,11 +224,8 @@ LePharoBPatternRewriteSnippetElement >> styler [
 LePharoBPatternRewriteSnippetElement >> subscribeToSnippetViewModel [
 	super subscribeToSnippetViewModel.
 	self snippetViewModel weak
-		when: LePharoBPatternRewriteSnippetSearchChanged
-			send: #updateSearchEditor
-			to: self;
-		when: LePharoBPatternRewriteSnippetReplaceChanged
-			send: #updateReplaceEditor
+		when: LePharoBPatternRewriteSnippetSourceChanged
+			send: #updateSourceEditor
 			to: self;
 		when: LePharoBPatternRewriteSnippetScopeChanged
 			send: #updateScope
@@ -246,22 +239,13 @@ LePharoBPatternRewriteSnippetElement >> unsubscribeFromSnippetViewModel [
 ]
 
 { #category : 'as yet unclassified' }
-LePharoBPatternRewriteSnippetElement >> updateReplace [
-	self
-		replaceEditorDo: [ :editor |
-			| replaceString |
-			replaceString := editor editor text asString.
-			replaceString ~= self snippet replace
-				ifTrue: [ self snippet replace: replaceString ] ]
-]
+LePharoBPatternRewriteSnippetElement >> updateReplaceButtonEnabled [
+	"The Replace button only makes sense when #source parses as [ [search] -> [replace] ];
+	 for a plain search pattern ([ search ]) there is nothing to replace with."
 
-{ #category : 'as yet unclassified' }
-LePharoBPatternRewriteSnippetElement >> updateReplaceEditor [
 	rewriteElement
-		childNamed: #replaceEditor
-		ifFound: [ :editor |
-			editor editor text asString ~= self snippet replace
-				ifTrue: [ editor editor text: self snippet replace asRopedText ] ]
+		childNamed: #replaceButton
+		ifFound: [ :button | button enabled: self snippet isRewrite ]
 ]
 
 { #category : 'as yet unclassified' }
@@ -281,20 +265,22 @@ LePharoBPatternRewriteSnippetElement >> updateScope [
 ]
 
 { #category : 'as yet unclassified' }
-LePharoBPatternRewriteSnippetElement >> updateSearch [
+LePharoBPatternRewriteSnippetElement >> updateSource [
 	self
-		searchEditorDo: [ :editor |
-			| searchString |
-			searchString := editor editor text asString.
-			searchString ~= self snippet search
-				ifTrue: [ self snippet search: searchString ] ]
+		sourceEditorDo: [ :editor |
+			| sourceString |
+			sourceString := editor editor text asString.
+			sourceString ~= self snippet source
+				ifTrue: [ self snippet source: sourceString ] ].
+	self updateReplaceButtonEnabled
 ]
 
 { #category : 'as yet unclassified' }
-LePharoBPatternRewriteSnippetElement >> updateSearchEditor [
+LePharoBPatternRewriteSnippetElement >> updateSourceEditor [
 	rewriteElement
-		childNamed: #searchEditor
+		childNamed: #sourceEditor
 		ifFound: [ :editor |
-			editor editor text asString ~= self snippet search
-				ifTrue: [ editor editor text: self snippet search asRopedText ] ]
+			editor editor text asString ~= self snippet source
+				ifTrue: [ editor editor text: self snippet source asRopedText ] ].
+	self updateReplaceButtonEnabled
 ]
