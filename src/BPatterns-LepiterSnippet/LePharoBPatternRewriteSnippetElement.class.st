@@ -1,8 +1,23 @@
+"
+I am the `LeSnippetElement` (view) for `LePharoBPatternRewriteSnippet`, by analogy with `LePharoRewriteSnippetElement`.
+
+Unlike `LePharoRewriteSnippetElement`, I do *not* implement the backtick-pattern authoring context menu (""Match any message"", ""Rename variable"", ""Add statement"", ...): that whole apparatus is built around `GtPharoPatternParser`'s backtick meta-syntax (``@args``, ``.Stmt``, ...), which `BPattern` doesn't use - its search/replace fields hold ordinary Pharo block source, where `any`-prefixed names are already wildcards. So my two source editors are plain Pharo editors: I reuse `GtPharoStyler` (the ordinary Pharo AST styler, i.e. `GtPharoPatternStyler`'s own superclass minus the backtick-specific overrides) with `GtPharoParser`'s statement-sequence starting state, the same one `LePharoRewriteSnippetElement` itself resolves via `GtPharoParser startingStateForMethodSequence`. No completion strategy is wired up for now (v1); can be added later if useful.
+
+I have no `isMethodPattern` toggle for the same reason the model doesn't: not supported yet.
+
+One small, deliberate naming fix versus the original: `LePharoRewriteSnippetElement` has both an ivar *and* a same-named instance method called `rewriteElement` (the ivar is the whole widget tree; the method builds the async rewrite-preview widget spawned by the Replace button) - legal Smalltalk, but confusing to read. I renamed the method to `#rewritePreviewElement` to keep the two apart.
+
+The Search button spawns `self snippet executeSearchInFilter: self searchFilter` directly as an object - since that is a `GtSearchBPatternFilter` (or an intersection with it), GT already renders it with the generic search-results view, using `GtSearchBPatternFilter>>#highlighter` (`GtBPatternHighlighter`) to highlight the matched region in each result - so match highlighting comes for free here, the same as it does in `BPattern>>#gtMatchesFor:`.
+
+`contentElement` floats a small gray ""BPattern"" label in the top-right corner of the snippet, the same overlay technique `LeExternalEvaluatedSnippetElement>>#initializeLanguageElement` uses for its language/connection label (a `BrFrame` with the real content plus the label, the label constrained `alignRight`/`alignTop`). `#snippetContent` returns this frame; `rewriteElement` (the actual form) is still the widget everything else (editors, buttons, scope filters) is built into and looked up by name from. This exists purely so a BPattern rewrite snippet stays visually distinguishable from a Pharo Rewrite Snippet at a glance, since the two look otherwise near-identical.
+
+"
 Class {
 	#name : 'LePharoBPatternRewriteSnippetElement',
 	#superclass : 'LeSnippetElement',
 	#instVars : [
-		'rewriteElement'
+		'rewriteElement',
+		'contentElement'
 	],
 	#category : 'BPatterns-LepiterSnippet',
 	#package : 'BPatterns-LepiterSnippet'
@@ -47,7 +62,7 @@ LePharoBPatternRewriteSnippetElement >> filterDescriptors [
 
 { #category : 'as yet unclassified' }
 LePharoBPatternRewriteSnippetElement >> initialize [
-	| searchEditor replaceEditor scopeElement filtersElement |
+	| searchEditor replaceEditor scopeElement filtersElement bpatternLabel |
 	super initialize.
 	rewriteElement := BrVerticalPane new.
 	rewriteElement padding: (BlInsets all: 5).
@@ -89,7 +104,24 @@ LePharoBPatternRewriteSnippetElement >> initialize [
 				label: 'Replace' asString;
 				action: [ rewriteElement phlow
 						spawnTool: (GtPhlowExplicitTool new stencil: [ self rewritePreviewElement ]) ])
-		as: #replaceButton
+		as: #replaceButton.
+
+	"Float a small 'BPattern' badge in the top-right corner, the same technique
+	 LeExternalEvaluatedSnippetElement uses for its language/connection label,
+	 so a BPattern rewrite snippet stays visually distinguishable from a Pharo
+	 Rewrite Snippet at a glance, not just at insertion time."
+	bpatternLabel := BrLabel new
+		aptitude: (BrGlamorousLabelAptitude new glamorousRegularSmallSize
+			foreground: BrGlamorousColors textMarkupColor);
+		margin: (BlInsets top: 5 right: 5);
+		text: 'BPattern'.
+	bpatternLabel constraintsDo: [ :c |
+		c frame horizontal alignRight.
+		c frame vertical alignTop ].
+	contentElement := BrFrame new
+		hMatchParent;
+		vFitContent;
+		addChildren: { rewriteElement. bpatternLabel }
 ]
 
 { #category : 'as yet unclassified' }
@@ -169,7 +201,7 @@ LePharoBPatternRewriteSnippetElement >> searchFilter [
 
 { #category : 'as yet unclassified' }
 LePharoBPatternRewriteSnippetElement >> snippetContent [
-	^ rewriteElement
+	^ contentElement
 ]
 
 { #category : 'as yet unclassified' }
