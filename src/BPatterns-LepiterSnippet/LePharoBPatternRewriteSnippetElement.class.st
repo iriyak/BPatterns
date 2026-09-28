@@ -213,11 +213,14 @@ LePharoBPatternRewriteSnippetElement >> sourceEditorDo: block [
 	rewriteElement childNamed: #sourceEditor ifFound: block
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'styling' }
 LePharoBPatternRewriteSnippetElement >> styler [
 	| styler |
 	styler := GtCompositeSmaCCASTStyler forParser: GtPharoParser.
-	styler stylers: { GtPharoStyler new }.
+	styler
+		stylers: {(GtPharoStyler new
+				coderViewModel: GtPharoSnippetCoderViewModel new;
+				yourself)}.
 	styler startingState: GtPharoParser startingStateForMethodSequence.
 	^ styler
 ]
