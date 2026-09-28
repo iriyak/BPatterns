@@ -33,7 +33,7 @@ LePharoBPatternRewriteSnippetElement >> createLabel: aString [
 		yourself
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'building' }
 LePharoBPatternRewriteSnippetElement >> createSourceEditor: anUpdateSymbol [
 	| element |
 	element := BrEditor new.
@@ -44,6 +44,8 @@ LePharoBPatternRewriteSnippetElement >> createSourceEditor: anUpdateSymbol [
 		aptitude: BrGlamorousCodeEditorAptitude + BrGlamorousEditableLabelAptitude.
 	element editor
 		styler: self styler;
+		doubleClickWordClassifier: GtSmalltalkSourceCoder doubleClickClassifier;
+		movementWordClassifier: GtSmalltalkSourceCoder wordMovementClassifier;
 		when: BrTextEditorInsertedEvent do: [ :event | self perform: anUpdateSymbol ];
 		when: BrTextEditorDeletedEvent do: [ :event | self perform: anUpdateSymbol ].
 	LeSnippetEditorElementShortcuter new
