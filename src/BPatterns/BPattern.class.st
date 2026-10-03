@@ -128,8 +128,20 @@ BPattern >> adoptToSequenceNode [
 		patternAST := RBSequenceNode statements: (Array with: patternAST)]
 ]
 
-{ #category : 'private' }
+{ #category : 'Protocol (private) - 2 selector(s)' }
 BPattern >> applyConfigs [
+	"Besides building the configured patternAST (as before), also warn - via #inform: (a
+	 non-blocking GT toast notification; confirmed empirically to not block or error when
+	 signaled from a background async search worker, since BlBlocUIManagerNotification is a
+	 resumable Notification that either renders an async toast or silently resumes if
+	 unhandled) - when a #with: config that opts into #warnsWhenUnmatched (i.e. a
+	 BPatternSpecificVarsConfig/BPatternSpecificSelectorsConfig, as opposed to the two
+	 always-present default configs) never matched a single node anywhere in the pattern.
+	 This is a strong signal that the variable/selector name passed to #with: was mistyped or
+	 copy-pasted from a different pattern (e.g. configuring 'anyVar' when the pattern
+	 actually uses 'anyRcv') - previously such a config was silently a no-op, leaving the
+	 pattern unexpectedly unfiltered."
+
 	| astBuilder unmatchedConfigs |
 	astBuilder := BPatternASTBuilder configuredBy: configs.
 	astBuilder visitNode: patternAST.
@@ -139,13 +151,11 @@ BPattern >> applyConfigs [
 	unmatchedConfigs := configs select: [ :each |
 		each warnsWhenUnmatched and: [ (astBuilder appliedConfigs includes: each) not ] ].
 	unmatchedConfigs ifNotEmpty: [
-		Transcript
-			show: (String streamContents: [ :s |
-				s nextPutAll: 'BPattern with: target(s) not found anywhere in the pattern - had no effect: '.
-				unmatchedConfigs
-					do: [ :each | each printOn: s ]
-					separatedBy: [ s nextPutAll: '; ' ] ]);
-			cr ]
+		self inform: (String streamContents: [ :s |
+			s nextPutAll: 'BPattern with: target(s) not found anywhere in the pattern - had no effect: '.
+			unmatchedConfigs
+				do: [ :each | each printOn: s ]
+				separatedBy: [ s nextPutAll: '; ' ] ]) ]
 ]
 
 { #category : 'converting' }
