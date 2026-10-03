@@ -85,21 +85,21 @@ LePharoBPatternRewriteSnippet >> contentAsString [
 				print: (scope ifNil: [ '' ]) ]
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'executing' }
 LePharoBPatternRewriteSnippet >> executeRewriteInFilter: aFilter [
-	| model rewrite |
-	model := RBNamespace new.
-	rewrite := self bpatternRewrite.
-	(self potentialMethodsInFilter: aFilter)
-		do: [ :each | (model classFor: each methodClass) compileTree: (rewrite rewriteMethod: each) ].
-	^ model
+	"Delegate to BPatternRewrite itself - answers a TAsyncFuture now (non-blocking), where
+	 it used to build and return an RBNamespace synchronously."
+
+	<return: #TAsyncFuture>
+	^ self bpatternRewrite executeRewriteInFilter: aFilter
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'executing' }
 LePharoBPatternRewriteSnippet >> executeSearchInFilter: aFilter [
-	| bpatternFilter |
-	bpatternFilter := GtSearchBPatternFilter bpattern: self bpattern.
-	^ aFilter ifNil: [ bpatternFilter ] ifNotNil: [ aFilter & bpatternFilter ]
+	"Delegate to BPattern itself - this is purely GT-integration plumbing now, not snippet
+	 logic of its own."
+
+	^ self bpattern executeSearchInFilter: aFilter
 ]
 
 { #category : 'as yet unclassified' }
@@ -186,14 +186,6 @@ LePharoBPatternRewriteSnippet >> parsedSourceNode [
 	"Parse #source as a Pharo expression. Answer nil if it does not parse (e.g. mid-edit)."
 
 	^ [ RBParser parseExpression: self source ] on: Error do: [ :e | nil ]
-]
-
-{ #category : 'as yet unclassified' }
-LePharoBPatternRewriteSnippet >> potentialMethodsInFilter: aFilter [
-	| scopeFilter |
-	scopeFilter := (aFilter ifNil: [ GtSearchImageMethodsFilter forAllMethods ])
-		select: [ :each | each isFromTrait not ].
-	^ (scopeFilter & (GtSearchBPatternFilter bpattern: self bpattern)) contents
 ]
 
 { #category : 'as yet unclassified' }

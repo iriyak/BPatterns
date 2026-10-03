@@ -62,7 +62,7 @@ LePharoBPatternRewriteSnippetElement >> filterDescriptors [
 	^ self snippet filterDescriptorsUsing: self snippetContext
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'initialization' }
 LePharoBPatternRewriteSnippetElement >> initialize [
 	| sourceEditor scopeElement filtersElement bpatternLabel buttonsRow |
 	super initialize.
@@ -106,7 +106,7 @@ LePharoBPatternRewriteSnippetElement >> initialize [
 				icon: BrGlamorousVectorIcons playinspect asElement;
 				label: 'Replace' asString;
 				action: [ rewriteElement phlow
-						spawnTool: (GtPhlowExplicitTool new stencil: [ self rewritePreviewElement ]) ])
+						spawnFuture: (self snippet executeRewriteInFilter: self searchFilter) ])
 		as: #replaceButton.
 	rewriteElement addChild: buttonsRow.
 
@@ -133,15 +133,6 @@ LePharoBPatternRewriteSnippetElement >> onSnippetViewModelChanged [
 	super onSnippetViewModelChanged.
 	self updateSourceEditor.
 	self updateScope
-]
-
-{ #category : 'as yet unclassified' }
-LePharoBPatternRewriteSnippetElement >> rewritePreviewElement [
-	| asyncElement |
-	asyncElement := BrAsyncWidget new
-			matchParent;
-			stencil: [ GtInspector forObject: (self snippet executeRewriteInFilter: self searchFilter) ].
-	^ asyncElement
 ]
 
 { #category : 'as yet unclassified' }

@@ -98,9 +98,10 @@ LePharoBPatternSnippet2Element >> onSnippetViewModelChanged [
 { #category : 'actions' }
 LePharoBPatternSnippet2Element >> performRewrite [
 	"Evaluate the snippet's source and, if it is a BPatternRewrite, spawn the executed
-	 rewrite (an RBNamespace of the rewritten classes). An evaluation failure goes to the
-	 Inspector (worth inspecting); anything else that is not a BPatternRewrite is just a
-	 precondition notice via #inform:, not an error."
+	 rewrite (a TAsyncFuture of an RBNamespace with the rewritten classes) - non-blocking
+	 end to end via #spawnFuture:. An evaluation failure goes to the Inspector (worth
+	 inspecting); anything else that is not a BPatternRewrite is just a precondition notice
+	 via #inform:, not an error."
 
 	self snippet
 		evaluateThenDo: [ :result |
@@ -108,9 +109,7 @@ LePharoBPatternSnippet2Element >> performRewrite [
 				ifTrue: [ | value |
 					value := result value.
 					(value isKindOf: BPatternRewrite)
-						ifTrue: [ self phlow
-								spawnTool: (GtPhlowExplicitTool new
-										stencil: [ GtInspector forObject: (value executeRewriteInFilter: self searchFilter) ]) ]
+						ifTrue: [ self phlow spawnFuture: (value executeRewriteInFilter: self searchFilter) ]
 						ifFalse: [ self inform: 'Source evaluates to a plain BPattern (no replace pattern) - nothing to rewrite: ' , value printString ] ]
 				ifFalse: [ self phlow spawnObject: result ] ]
 ]

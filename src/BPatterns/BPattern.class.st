@@ -259,13 +259,15 @@ BPattern >> postCopy [
 
 { #category : 'gt-searching' }
 BPattern >> potentialMethodsInFilter: aFilter [
-	"Methods (excluding traits) within aFilter's scope (or all methods, if aFilter is nil)
-	 that match self."
+	"Answer a lazy async stream (GtAsyncSearchGroupStream) of methods (excluding traits)
+	 within aFilter's scope (or all methods, if aFilter is nil) that match self - not
+	 materialized into an Array, so a caller can chain #do:/#collect:/etc. and have items
+	 processed as they stream in, rather than waiting for the whole search to finish first."
 
 	| scopeFilter |
 	scopeFilter := (aFilter ifNil: [ GtSearchImageMethodsFilter forAllMethods ])
 		select: [ :each | each isFromTrait not ].
-	^ (self executeSearchInFilter: scopeFilter) contents
+	^ (self executeSearchInFilter: scopeFilter) asAsyncStream
 ]
 
 { #category : 'printing' }
