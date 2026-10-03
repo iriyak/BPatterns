@@ -50,7 +50,7 @@ This fork was adapted to run on GT, and adds GT-specific tooling around the same
 - `BlockClosure >> #gtBPatternMatches` — a one-line entry point that turns a pattern block straight into a live, spawnable `GtSearchBPatternFilter` object in GT.
 - Two experimental Lepiter snippets, kept side by side for comparison:
   - **"BPattern rewrite"** (`LePharoBPatternLiteralSnippet`): a single Pharo source editor (syntax-highlighted, with Smalltalk-aware word selection/navigation) that structurally parses its own source — `[ pattern ]` or `[ [search] -> [replace] ]` — to decide between a plain search and a rewrite, with a "Search in:" scope filter row and Search/Replace buttons.
-  - **"BPattern (evaluated)"** (`LePharoBPatternSnippet2`): built directly on GT's own `LePharoSnippet`, so it gets the real Pharo editor (completion, evaluation-error display) for free — its source is ordinary Pharo code (e.g. `[ anyVar isNil ifTrue: anyBlock ] bpattern`) that is evaluated on demand to get a `BPattern`/`BPatternRewrite` object, with the same scope row and always-enabled Search/Rewrite buttons.
+  - **"BPattern (evaluated)"** (`LePharoBPatternSnippet`): built directly on GT's own `LePharoSnippet`, so it gets the real Pharo editor (completion, evaluation-error display) for free — its source is ordinary Pharo code (e.g. `[ anyVar isNil ifTrue: anyBlock ] bpattern`) that is evaluated on demand to get a `BPattern`/`BPatternRewrite` object, with the same scope row and always-enabled Search/Rewrite buttons.
   - Both snippets delegate all search/rewrite execution to `BPattern`/`BPatternRewrite` themselves (see New API above) rather than implementing it twice, and both spawn their results — a search filter, or the rewritten `RBNamespace` once the async rewrite future resolves — via GT's own `spawnObject:`/`spawnFuture:` machinery, never blocking the UI.
 - A `lepiter/` booklet (see Installation above) with development notes and a live demo of both snippets.
 
@@ -63,3 +63,4 @@ This fork was adapted to run on GT, and adds GT-specific tooling around the same
 ## License
 
 MIT License. Original work Copyright (c) 2025 [Denis Kudriashov](https://github.com/dionisiydk); fork additions Copyright (c) 2026 Kazunori Iriya. See [LICENSE](LICENSE) for the full text.
+
