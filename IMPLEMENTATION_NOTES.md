@@ -1,0 +1,27 @@
+# Implementation notes
+
+This document covers what's different in this fork from the original BPatterns, in more detail than the [README](README.md)'s API summary. For the original `BPattern` API itself (what a `BPattern` is, pattern configuration, `#bmethod`/`#brewrite`, etc.), see the **[original README](https://github.com/dionisiydk/BPatterns/blob/main/README.md)**.
+
+This fork was adapted to run on GT, and adds GT-specific tooling around the same `BPattern`/`BPatternRewrite` API described in the original README.
+
+## Breaking changes
+
+- The pattern engine now builds on Pharo's `RB*` (RefactoringBrowser) AST/searcher classes instead of `OC*` (OpenChain), to match what GT itself uses.
+
+## New API
+
+- `BPattern >> #uniqueUsers` / `#uniqueUsersInClass:` return matching methods de-duplicated by origin (`<origin, selector>`), so a method composed into many classes from a single Trait is only reported once — as opposed to `#users`/`#usersInClass:`, which answer one result per distinct `<methodClass, selector>` pair (every method actually installed in the system, including one per Trait composition). Both are correct; they just answer different questions.
+- `BPattern >> #users` / `#usersInClass:` are re-implemented on top of GT's own search-filter framework (`GtSearchBPatternFilter`) instead of a manual `Smalltalk allClasses` scan.
+- `BPattern >> #executeSearchInFilter:` and `BPattern >> #potentialMethodsInFilter:` expose the search as GT-integration building blocks: the former composes a `GtSearchBPatternFilter` into a given search scope (used directly by `#gtMatchesFor:` and both Lepiter snippets below); the latter narrows that down to a lazy async stream of candidate methods — excluding Trait-composed methods, for the same `<origin, selector>` reason as `#uniqueUsers` above — for `BPatternRewrite` to rewrite.
+- `BPatternRewrite >> #executeRewriteInFilter:` streams candidates from `#potentialMethodsInFilter:` and compiles each rewritten method as it arrives, answering a `TAsyncFuture` of the resulting `RBNamespace` — fully non-blocking end to end, mirroring `LePharoRewriteSnippet`'s own async design.
+
+## New GT views and tools
+
+- `BPattern` gets three new inspector tabs: **Matches**, **Metrics**, and **PatternAST**.
+- `GtSearchBPatternFilter` — a `GtSearchMethodsFilter` that lets a `BPattern` be composed into GT's search/scope pipeline (`&`, `|`, class/package scoping, etc.), with AST-match highlighting via `GtBPatternHighlighter`.
+- `BlockClosure >> #gtBPatternMatches` — a one-line entry point that turns a pattern block straight into a live, spawnable `GtSearchBPatternFilter` object in GT.
+- Two experimental Lepiter snippets, kept side by side for comparison:
+  - **"BPattern (literal)"** (`LePharoBPatternLiteralSnippet`): a single Pharo source editor (syntax-highlighted, with Smalltalk-aware word selection/navigation) that structurally parses its own source — `[ pattern ]` or `[ [search] -> [replace] ]` — to decide between a plain search and a rewrite, with a "Search in:" scope filter row and Search/Replace buttons. *(Currently excluded from Spotter's "Add page with snippet" list and the Lepiter + insert-snippet menu — see `LePharoBPatternLiteralSnippet class >> #contextMenuItemSpecification`.)*
+  - **"BPattern (code)"** (`LePharoBPatternSnippet`): built directly on GT's own `LePharoSnippet`, so it gets the real Pharo editor (completion, evaluation-error display) for free — its source is ordinary Pharo code (e.g. `[ anyVar isNil ifTrue: anyBlock ] bpattern`) that is evaluated on demand to get a `BPattern`/`BPatternRewrite` object, with the same scope row and always-enabled Search/Rewrite buttons.
+  - Both snippets delegate all search/rewrite execution to `BPattern`/`BPatternRewrite` themselves (see New API above) rather than implementing it twice, and both spawn their results — a search filter, or the rewritten `RBNamespace` once the async rewrite future resolves — via GT's own `spawnObject:`/`spawnFuture:` machinery, never blocking the UI.
+- A `lepiter/` booklet (see [Installation](README.md#installation) in the README) with development notes and a live demo of both snippets.
