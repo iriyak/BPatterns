@@ -106,11 +106,6 @@ BPattern class >> fromBlockAST: definitionAST [
 	^ self fromAST: patternAST
 ]
 
-{ #category : 'instance creation' }
-BPattern class >> fromString: aString [
-	^ self fromBlockAST: (RBParser parseExpression: aString)
-]
-
 { #category : 'comparing' }
 BPattern >> = anObject [
 	"Answer whether the receiver and anObject represent the same object."
