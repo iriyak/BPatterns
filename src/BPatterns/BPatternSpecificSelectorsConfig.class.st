@@ -48,6 +48,11 @@ BPatternSpecificSelectorsConfig >> printOn: aStream [
 	aStream nextPut: $(.
 	patternKeywords
 		do: [:each | aStream nextPutAll: each ] 
-		separatedBy: [ aStream nextPut: ', ' ].
+		separatedBy: [ aStream nextPutAll: ', ' ].
 	aStream nextPut: $).
+]
+
+{ #category : 'testing' }
+BPatternSpecificSelectorsConfig >> warnsWhenUnmatched [
+	^ true
 ]

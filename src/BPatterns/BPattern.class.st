@@ -130,11 +130,22 @@ BPattern >> adoptToSequenceNode [
 
 { #category : 'private' }
 BPattern >> applyConfigs [
-	| astBuilder |
+	| astBuilder unmatchedConfigs |
 	astBuilder := BPatternASTBuilder configuredBy: configs.
 	astBuilder visitNode: patternAST.
 	constantSelectors := astBuilder collectedSelectors.
-	isConfigured := true
+	isConfigured := true.
+
+	unmatchedConfigs := configs select: [ :each |
+		each warnsWhenUnmatched and: [ (astBuilder appliedConfigs includes: each) not ] ].
+	unmatchedConfigs ifNotEmpty: [
+		Transcript
+			show: (String streamContents: [ :s |
+				s nextPutAll: 'BPattern with: target(s) not found anywhere in the pattern - had no effect: '.
+				unmatchedConfigs
+					do: [ :each | each printOn: s ]
+					separatedBy: [ s nextPutAll: '; ' ] ]);
+			cr ]
 ]
 
 { #category : 'converting' }

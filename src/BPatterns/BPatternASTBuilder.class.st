@@ -9,7 +9,8 @@ Class {
 	#superclass : 'RBProgramNodeVisitor',
 	#instVars : [
 		'patternConfigs',
-		'collectedSelectors'
+		'collectedSelectors',
+		'appliedConfigs'
 	],
 	#category : 'BPatterns',
 	#package : 'BPatterns'
@@ -21,11 +22,23 @@ BPatternASTBuilder class >> configuredBy: configs [
 		patternConfigs: configs
 ]
 
+{ #category : 'accessing' }
+BPatternASTBuilder >> appliedConfigs [
+	"Answer the IdentitySet of configs (from patternConfigs) that matched at least one node
+	 during the AST visit just completed - i.e. #applyForNode: was actually sent to them.
+	 Used by BPattern>>#applyConfigs to detect a #with: config whose target name/selector
+	 never appeared anywhere in the pattern, which would otherwise silently have no effect."
+
+	^ appliedConfigs
+]
+
 { #category : 'visiting' }
 BPatternASTBuilder >> applyConfigsFor: aNode [
 	patternConfigs 
 		select: [ :each | each isForNode: aNode ] 
-		thenDo: [ :each | 	each applyForNode: aNode ]
+		thenDo: [ :each | 
+			appliedConfigs add: each.
+			each applyForNode: aNode ]
 ]
 
 { #category : 'accessing' }
@@ -34,12 +47,13 @@ BPatternASTBuilder >> collectedSelectors [
 	^ collectedSelectors
 ]
 
-{ #category : 'visiting' }
+{ #category : 'initialization' }
 BPatternASTBuilder >> initialize [
 	super initialize.
-	
+
 	patternConfigs := #().
-	collectedSelectors := OrderedCollection new
+	collectedSelectors := OrderedCollection new.
+	appliedConfigs := IdentitySet new
 ]
 
 { #category : 'accessing' }

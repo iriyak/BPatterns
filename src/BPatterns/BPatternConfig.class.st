@@ -102,3 +102,19 @@ BPatternConfig >> nodeConfigBlock: anObject [
 
 	nodeConfigBlock := anObject
 ]
+
+{ #category : 'testing' }
+BPatternConfig >> warnsWhenUnmatched [
+	"Answer whether BPattern>>#applyConfigs should warn if this config never matched any
+	 node of the pattern AST it was applied to. False for the two default configs
+	 (BPatternDefaultVarConfig/BPatternDefaultSelectorConfig) added by every BPattern via
+	 #useDefaultConfigs - a pattern legitimately may have no `any`-prefixed names at all, so
+	 that going unmatched is normal, not a mistake. True for the #with:-added, name-targeted
+	 configs (BPatternSpecificVarsConfig/BPatternSpecificSelectorsConfig), where a config
+	 whose target name/selector/keyword was not found anywhere in the pattern almost
+	 certainly means the name was mistyped or copy-pasted from elsewhere (e.g. `with: [
+	 anyVar ] -> [...]` on a pattern that actually uses `anyRcv`) - the config is then
+	 silently a no-op, which this warning surfaces immediately instead."
+
+	^ false
+]

@@ -55,3 +55,8 @@ BPatternSpecificVarsConfig >> printOn: aStream [
 		separatedBy: [ aStream nextPutAll: ', ' ].
 	aStream nextPut: $).
 ]
+
+{ #category : 'testing' }
+BPatternSpecificVarsConfig >> warnsWhenUnmatched [
+	^ true
+]
