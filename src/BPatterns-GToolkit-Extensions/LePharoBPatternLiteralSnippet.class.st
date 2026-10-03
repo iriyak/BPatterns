@@ -12,7 +12,9 @@ Class {
 
 { #category : 'menu' }
 LePharoBPatternLiteralSnippet class >> contextMenuItemSpecification [
-	<leSnippetSpecification>
+	"<leSnippetSpecification> - temporarily disabled: excluded from Spotter's
+	 'Add page with snippet' list and the Lepiter + insert-snippet menu. Re-enable
+	 by uncommenting the pragma above."
 	^ LeContextMenuItemSpecification new
 		snippetClass: self;
 		title: self description
@@ -20,7 +22,7 @@ LePharoBPatternLiteralSnippet class >> contextMenuItemSpecification [
 
 { #category : 'accessing' }
 LePharoBPatternLiteralSnippet class >> description [
-	^ 'BPattern rewrite'
+	^ 'BPattern (literal)'
 ]
 
 { #category : 'instance creation' }

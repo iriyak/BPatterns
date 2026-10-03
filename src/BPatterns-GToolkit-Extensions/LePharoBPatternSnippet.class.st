@@ -19,7 +19,7 @@ LePharoBPatternSnippet class >> contextMenuItemSpecification [
 
 { #category : 'accessing' }
 LePharoBPatternSnippet class >> description [
-	^ 'BPattern (evaluated)'
+	^ 'BPattern (code)'
 ]
 
 { #category : 'persistence' }
