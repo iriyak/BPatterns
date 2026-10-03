@@ -23,7 +23,7 @@ BaselineOfBPatterns class >> loadLepiter [
 		ifNone: [ self inform: 'Repository not found.' ]
 ]
 
-{ #category : 'Protocol (Protocol (baselines) - 1 selector(s)) - 1 selector(s)' }
+{ #category : 'baselines' }
 BaselineOfBPatterns >> baseline: spec [
 	<baseline>
 	spec for: #'common' do: [
