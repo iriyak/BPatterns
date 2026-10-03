@@ -38,7 +38,6 @@ This fork was adapted to run on GT, and adds GT-specific tooling around the same
 
 **New API**
 
-- `BPattern class >> #fromString:` builds a `BPattern` directly from a source string (in addition to the existing `#fromBlock:`).
 - `BPattern >> #uniqueUsers` / `#uniqueUsersInClass:` return matching methods de-duplicated by origin (`<origin, selector>`), so a method composed into many classes from a single Trait is only reported once — as opposed to `#users`/`#usersInClass:`, which answer one result per distinct `<methodClass, selector>` pair (every method actually installed in the system, including one per Trait composition). Both are correct; they just answer different questions.
 - `BPattern >> #users` / `#usersInClass:` are re-implemented on top of GT's own search-filter framework (`GtSearchBPatternFilter`) instead of a manual `Smalltalk allClasses` scan.
 - `BPattern >> #executeSearchInFilter:` and `BPattern >> #potentialMethodsInFilter:` expose the search as GT-integration building blocks: the former composes a `GtSearchBPatternFilter` into a given search scope (used directly by `#gtMatchesFor:` and both Lepiter snippets below); the latter narrows that down to a lazy async stream of candidate methods — excluding Trait-composed methods, for the same `<origin, selector>` reason as `#uniqueUsers` above — for `BPatternRewrite` to rewrite.
