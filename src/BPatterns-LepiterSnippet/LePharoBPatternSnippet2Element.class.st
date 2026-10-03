@@ -25,7 +25,7 @@ LePharoBPatternSnippet2Element >> filterDescriptors [
 	^ self snippet filterDescriptorsUsing: self snippetContext
 ]
 
-{ #category : 'initialization' }
+{ #category : 'Protocol (initialization) - 1 selector(s)' }
 LePharoBPatternSnippet2Element >> initialize [
 	| scopeElement filtersElement buttonsRow bpatternLabel |
 	super initialize.
@@ -74,7 +74,7 @@ LePharoBPatternSnippet2Element >> initialize [
 	rewriteElement addChild: buttonsRow.
 
 	"Float a small 'BPattern' badge in the top-right corner, same technique as
-	 LePharoBPatternRewriteSnippetElement/LeExternalEvaluatedSnippetElement use."
+	 LePharoBPatternLiteralSnippetElement/LeExternalEvaluatedSnippetElement use."
 	bpatternLabel := BrLabel new
 		aptitude: (BrGlamorousLabelAptitude new glamorousRegularSmallSize
 			foreground: BrGlamorousColors textMarkupColor);

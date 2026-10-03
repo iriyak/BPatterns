@@ -1,5 +1,5 @@
 "
-I am the `LeSnippetElement` (view) for `LePharoBPatternRewriteSnippet`, by analogy with `LePharoRewriteSnippetElement`.
+I am the `LeSnippetElement` (view) for `LePharoBPatternLiteralSnippet`, by analogy with `LePharoRewriteSnippetElement`.
 
 Unlike `LePharoRewriteSnippetElement`, I do *not* implement the backtick-pattern authoring context menu (""Match any message"", ""Rename variable"", ""Add statement"", ...): that whole apparatus is built around `GtPharoPatternParser`'s backtick meta-syntax (``@args``, ``.Stmt``, ...), which `BPattern` doesn't use - its search/replace fields hold ordinary Pharo block source, where `any`-prefixed names are already wildcards. So my two source editors are plain Pharo editors: I reuse `GtPharoStyler` (the ordinary Pharo AST styler, i.e. `GtPharoPatternStyler`'s own superclass minus the backtick-specific overrides) with `GtPharoParser`'s statement-sequence starting state, the same one `LePharoRewriteSnippetElement` itself resolves via `GtPharoParser startingStateForMethodSequence`. No completion strategy is wired up for now (v1); can be added later if useful.
 
@@ -13,7 +13,7 @@ The Search button spawns `self snippet executeSearchInFilter: self searchFilter`
 
 "
 Class {
-	#name : 'LePharoBPatternRewriteSnippetElement',
+	#name : 'LePharoBPatternLiteralSnippetElement',
 	#superclass : 'LeSnippetElement',
 	#instVars : [
 		'rewriteElement',
@@ -24,7 +24,7 @@ Class {
 }
 
 { #category : 'as yet unclassified' }
-LePharoBPatternRewriteSnippetElement >> createLabel: aString [
+LePharoBPatternLiteralSnippetElement >> createLabel: aString [
 	^ BrLabel new
 		text: aString asRopedText;
 		aptitude: (BrGlamorousLabelAptitude new glamorousRegularFontAndSize
@@ -34,7 +34,7 @@ LePharoBPatternRewriteSnippetElement >> createLabel: aString [
 ]
 
 { #category : 'building' }
-LePharoBPatternRewriteSnippetElement >> createSourceEditor: anUpdateSymbol [
+LePharoBPatternLiteralSnippetElement >> createSourceEditor: anUpdateSymbol [
 	| element |
 	element := BrEditor new.
 	element vFitContent.
@@ -57,13 +57,13 @@ LePharoBPatternRewriteSnippetElement >> createSourceEditor: anUpdateSymbol [
 ]
 
 { #category : 'as yet unclassified' }
-LePharoBPatternRewriteSnippetElement >> filterDescriptors [
+LePharoBPatternLiteralSnippetElement >> filterDescriptors [
 	snippetViewModel ifNil: [ ^ GtSearchFilter globalFilterDescriptors ].
 	^ self snippet filterDescriptorsUsing: self snippetContext
 ]
 
 { #category : 'initialization' }
-LePharoBPatternRewriteSnippetElement >> initialize [
+LePharoBPatternLiteralSnippetElement >> initialize [
 	| sourceEditor scopeElement filtersElement bpatternLabel buttonsRow |
 	super initialize.
 	rewriteElement := BrVerticalPane new.
@@ -129,14 +129,14 @@ LePharoBPatternRewriteSnippetElement >> initialize [
 ]
 
 { #category : 'as yet unclassified' }
-LePharoBPatternRewriteSnippetElement >> onSnippetViewModelChanged [
+LePharoBPatternLiteralSnippetElement >> onSnippetViewModelChanged [
 	super onSnippetViewModelChanged.
 	self updateSourceEditor.
 	self updateScope
 ]
 
 { #category : 'as yet unclassified' }
-LePharoBPatternRewriteSnippetElement >> saveScope [
+LePharoBPatternLiteralSnippetElement >> saveScope [
 	rewriteElement
 		childNamed: #filtersElement
 		ifFound: [ :filtersElement |
@@ -159,20 +159,20 @@ LePharoBPatternRewriteSnippetElement >> saveScope [
 ]
 
 { #category : 'as yet unclassified' }
-LePharoBPatternRewriteSnippetElement >> scope [
+LePharoBPatternLiteralSnippetElement >> scope [
 	^ (snippetViewModel ifNotNil: [ self snippet ])
 		ifNotNil: [ :snippet | snippet scope ]
 ]
 
 { #category : 'as yet unclassified' }
-LePharoBPatternRewriteSnippetElement >> scopeLabel [
+LePharoBPatternLiteralSnippetElement >> scopeLabel [
 	^ ((snippetViewModel ifNotNil: [ self snippet ])
 		ifNotNil: [ :snippet | snippet scope ifNotNil: [ :scope | scope trim ifEmpty: [ nil ] ] ])
 		ifNil: [ 'All methods' ]
 ]
 
 { #category : 'as yet unclassified' }
-LePharoBPatternRewriteSnippetElement >> searchFilter [
+LePharoBPatternLiteralSnippetElement >> searchFilter [
 	| filters |
 	filters := OrderedCollection new.
 	rewriteElement
@@ -184,28 +184,28 @@ LePharoBPatternRewriteSnippetElement >> searchFilter [
 ]
 
 { #category : 'as yet unclassified' }
-LePharoBPatternRewriteSnippetElement >> snippetContent [
+LePharoBPatternLiteralSnippetElement >> snippetContent [
 	^ contentElement
 ]
 
 { #category : 'as yet unclassified' }
-LePharoBPatternRewriteSnippetElement >> snippetContext [
+LePharoBPatternLiteralSnippetElement >> snippetContext [
 	snippetViewModel snippetsCollectionDo: [ :each | ^ each sharedSnippetContext ].
 	^ nil
 ]
 
 { #category : 'as yet unclassified' }
-LePharoBPatternRewriteSnippetElement >> snippetToolbar [
+LePharoBPatternLiteralSnippetElement >> snippetToolbar [
 	^ nil
 ]
 
 { #category : 'as yet unclassified' }
-LePharoBPatternRewriteSnippetElement >> sourceEditorDo: block [
+LePharoBPatternLiteralSnippetElement >> sourceEditorDo: block [
 	rewriteElement childNamed: #sourceEditor ifFound: block
 ]
 
 { #category : 'styling' }
-LePharoBPatternRewriteSnippetElement >> styler [
+LePharoBPatternLiteralSnippetElement >> styler [
 	| styler |
 	styler := GtCompositeSmaCCASTStyler forParser: GtPharoParser.
 	styler
@@ -217,25 +217,25 @@ LePharoBPatternRewriteSnippetElement >> styler [
 ]
 
 { #category : 'as yet unclassified' }
-LePharoBPatternRewriteSnippetElement >> subscribeToSnippetViewModel [
+LePharoBPatternLiteralSnippetElement >> subscribeToSnippetViewModel [
 	super subscribeToSnippetViewModel.
 	self snippetViewModel weak
-		when: LePharoBPatternRewriteSnippetSourceChanged
+		when: LePharoBPatternLiteralSnippetSourceChanged
 			send: #updateSourceEditor
 			to: self;
-		when: LePharoBPatternRewriteSnippetScopeChanged
+		when: LePharoBPatternLiteralSnippetScopeChanged
 			send: #updateScope
 			to: self
 ]
 
 { #category : 'as yet unclassified' }
-LePharoBPatternRewriteSnippetElement >> unsubscribeFromSnippetViewModel [
+LePharoBPatternLiteralSnippetElement >> unsubscribeFromSnippetViewModel [
 	super unsubscribeFromSnippetViewModel.
 	self snippetViewModel unsubscribe: self
 ]
 
 { #category : 'as yet unclassified' }
-LePharoBPatternRewriteSnippetElement >> updateReplaceButtonEnabled [
+LePharoBPatternLiteralSnippetElement >> updateReplaceButtonEnabled [
 	"The Replace button only makes sense when #source parses as [ [search] -> [replace] ];
 	 for a plain search pattern ([ search ]) there is nothing to replace with."
 
@@ -245,7 +245,7 @@ LePharoBPatternRewriteSnippetElement >> updateReplaceButtonEnabled [
 ]
 
 { #category : 'as yet unclassified' }
-LePharoBPatternRewriteSnippetElement >> updateScope [
+LePharoBPatternLiteralSnippetElement >> updateScope [
 	rewriteElement
 		childNamed: #filtersElement
 		ifFound: [ :filtersElement |
@@ -261,7 +261,7 @@ LePharoBPatternRewriteSnippetElement >> updateScope [
 ]
 
 { #category : 'as yet unclassified' }
-LePharoBPatternRewriteSnippetElement >> updateSource [
+LePharoBPatternLiteralSnippetElement >> updateSource [
 	self
 		sourceEditorDo: [ :editor |
 			| sourceString |
@@ -272,7 +272,7 @@ LePharoBPatternRewriteSnippetElement >> updateSource [
 ]
 
 { #category : 'as yet unclassified' }
-LePharoBPatternRewriteSnippetElement >> updateSourceEditor [
+LePharoBPatternLiteralSnippetElement >> updateSourceEditor [
 	rewriteElement
 		childNamed: #sourceEditor
 		ifFound: [ :editor |

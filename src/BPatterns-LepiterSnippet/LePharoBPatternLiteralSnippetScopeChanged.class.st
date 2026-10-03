@@ -1,5 +1,5 @@
 Class {
-	#name : 'LePharoBPatternRewriteSnippetScopeChanged',
+	#name : 'LePharoBPatternLiteralSnippetScopeChanged',
 	#superclass : 'LeSnippetContentChanged',
 	#instVars : [
 		'scope'
@@ -9,11 +9,11 @@ Class {
 }
 
 { #category : 'as yet unclassified' }
-LePharoBPatternRewriteSnippetScopeChanged >> scope [
+LePharoBPatternLiteralSnippetScopeChanged >> scope [
 	^ scope
 ]
 
 { #category : 'as yet unclassified' }
-LePharoBPatternRewriteSnippetScopeChanged >> scope: aString [
+LePharoBPatternLiteralSnippetScopeChanged >> scope: aString [
 	scope := aString
 ]

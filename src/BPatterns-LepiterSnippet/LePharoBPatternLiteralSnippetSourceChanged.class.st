@@ -1,5 +1,5 @@
 Class {
-	#name : 'LePharoBPatternRewriteSnippetSourceChanged',
+	#name : 'LePharoBPatternLiteralSnippetSourceChanged',
 	#superclass : 'LeSnippetContentChanged',
 	#instVars : [
 		'sourceText'
@@ -9,11 +9,11 @@ Class {
 }
 
 { #category : 'as yet unclassified' }
-LePharoBPatternRewriteSnippetSourceChanged >> patternSource [
+LePharoBPatternLiteralSnippetSourceChanged >> patternSource [
 	^ sourceText
 ]
 
 { #category : 'as yet unclassified' }
-LePharoBPatternRewriteSnippetSourceChanged >> patternSource: aString [
+LePharoBPatternLiteralSnippetSourceChanged >> patternSource: aString [
 	sourceText := aString
 ]
