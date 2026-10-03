@@ -75,6 +75,20 @@ BPatternRewrite >> displayStringOn: aStream [
 	aStream nextPutAll: ' ]'
 ]
 
+{ #category : 'gt-rewriting' }
+BPatternRewrite >> executeRewriteInFilter: aFilter [
+	"Rewrite every method within aFilter's scope (or all methods, if aFilter is nil) that
+	 matches #searchPattern, compiling the results into a fresh RBNamespace. This is the
+	 GT-integration counterpart to #rewriteMethod: - rewriting across a filter's search
+	 scope rather than a single, already-known method."
+
+	| model |
+	model := RBNamespace new.
+	(self searchPattern potentialMethodsInFilter: aFilter)
+		do: [ :each | (model classFor: each methodClass) compileTree: (self rewriteMethod: each) ].
+	^ model
+]
+
 { #category : 'printing' }
 BPatternRewrite >> printOn: aStream [
 	super printOn: aStream.

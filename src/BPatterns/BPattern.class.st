@@ -162,6 +162,17 @@ BPattern >> displayStringOn: aStream [
 	aStream nextPutAll: patternAST formattedCode
 ]
 
+{ #category : 'gt-searching' }
+BPattern >> executeSearchInFilter: aFilter [
+	"Answer a GtSearchBPatternFilter matching self, intersected with aFilter when given.
+	 This is the GT-integration counterpart to #scanAST:do: - matching within a filter's
+	 search scope rather than within a single, already-known AST."
+
+	| bpatternFilter |
+	bpatternFilter := GtSearchBPatternFilter bpattern: self.
+	^ aFilter ifNil: [ bpatternFilter ] ifNotNil: [ aFilter & bpatternFilter ]
+]
+
 { #category : 'as yet unclassified' }
 BPattern >> gtMatchesFor: aView [
 	<gtView>
@@ -244,6 +255,17 @@ BPattern >> postCopy [
 	
 	patternAST := patternAST copy.
 	configs := configs copy.
+]
+
+{ #category : 'gt-searching' }
+BPattern >> potentialMethodsInFilter: aFilter [
+	"Methods (excluding traits) within aFilter's scope (or all methods, if aFilter is nil)
+	 that match self."
+
+	| scopeFilter |
+	scopeFilter := (aFilter ifNil: [ GtSearchImageMethodsFilter forAllMethods ])
+		select: [ :each | each isFromTrait not ].
+	^ (self executeSearchInFilter: scopeFilter) contents
 ]
 
 { #category : 'printing' }
