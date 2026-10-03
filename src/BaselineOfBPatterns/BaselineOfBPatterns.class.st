@@ -26,6 +26,18 @@ BaselineOfBPatterns class >> loadLepiter [
 { #category : 'baselines' }
 BaselineOfBPatterns >> baseline: spec [
 	<baseline>
+	"This fork's baseline deliberately does not register the upstream
+	 BPatterns-Calypso(-Tests) or BPatterns-RewritePreview(-Tests)
+	 packages below, even though their source directories are still
+	 present under src/ (kept for historical reference, not deleted).
+	 Both depend on classic-Pharo-only tooling this GT-focused fork
+	 doesn't target - Calypso's own command framework
+	 (SycSourceCodeCommand/Cly*) and the classic Changes browser
+	 (StChangesBrowserPresenter) respectively - and this fork
+	 reimplements their functionality on GT-native tools instead (see
+	 IMPLEMENTATION_NOTES.md). Iceberg's package browser may still list
+	 these directories as unloaded packages; that's expected, since
+	 Metacello/Iceberg only ever loads what is registered here."
 	spec for: #'common' do: [
 		spec
 			package: #'BPatterns';
