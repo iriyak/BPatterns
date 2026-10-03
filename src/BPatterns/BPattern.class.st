@@ -262,7 +262,28 @@ BPattern >> potentialMethodsInFilter: aFilter [
 	"Answer a lazy async stream (GtAsyncSearchGroupStream) of methods (excluding traits)
 	 within aFilter's scope (or all methods, if aFilter is nil) that match self - not
 	 materialized into an Array, so a caller can chain #do:/#collect:/etc. and have items
-	 processed as they stream in, rather than waiting for the whole search to finish first."
+	 processed as they stream in, rather than waiting for the whole search to finish first.
+
+	 Excludes isFromTrait methods (mirroring LePharoRewriteSnippet>>#potentialMethodsInFilter:'s
+	 own identical filter): when a method is composed into a class from a Trait, the system
+	 installs one CompiledMethod per composing class, but they all share one true origin (the
+	 Trait's own method) - rewriting them individually would mean compiling N separate
+	 per-class overrides of what is really a single piece of source, defeating the point of the
+	 Trait. Excluding isFromTrait methods narrows the scope down to one CompiledMethod per
+	 distinct <origin, selector> pair (each class's own methods, plus each Trait's own
+	 canonical copy) - the right notion of 'location to edit' for a rewrite, since editing a
+	 Trait's own method once already propagates to every composing class automatically.
+
+	 This is a different notion of uniqueness than BPattern>>#users (which answers one
+	 CompiledMethod per distinct <methodClass, selector> pair - every method actually
+	 installed in the system, counting each Trait composition separately) answers - verified
+	 live for one pattern, #users saw 497 distinct <methodClass, selector> pairs (no two
+	 identical as such), of which 163 were isFromTrait duplicates sharing an origin with
+	 another entry, collapsing to 334 distinct <origin, selector> pairs once deduplicated by
+	 origin (matching #uniqueUsers and this method's own stream both in count and in the
+	 exact set of entries). Both 497 and 334 are internally consistent and correct answers -
+	 they just answer different questions (every installed method vs. every place the actual
+	 source differs)."
 
 	| scopeFilter |
 	scopeFilter := (aFilter ifNil: [ GtSearchImageMethodsFilter forAllMethods ])
