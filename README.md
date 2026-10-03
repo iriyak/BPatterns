@@ -39,16 +39,21 @@ This fork was adapted to run on GT, and adds GT-specific tooling around the same
 **New API**
 
 - `BPattern class >> #fromString:` builds a `BPattern` directly from a source string (in addition to the existing `#fromBlock:`).
-- `BPattern >> #uniqueUsers` / `#uniqueUsersInClass:` return matching methods de-duplicated by origin, so a method shared across a class and the traits/subclasses that use it is only reported once.
+- `BPattern >> #uniqueUsers` / `#uniqueUsersInClass:` return matching methods de-duplicated by origin (`<origin, selector>`), so a method composed into many classes from a single Trait is only reported once — as opposed to `#users`/`#usersInClass:`, which answer one result per distinct `<methodClass, selector>` pair (every method actually installed in the system, including one per Trait composition). Both are correct; they just answer different questions.
 - `BPattern >> #users` / `#usersInClass:` are re-implemented on top of GT's own search-filter framework (`GtSearchBPatternFilter`) instead of a manual `Smalltalk allClasses` scan.
+- `BPattern >> #executeSearchInFilter:` and `BPattern >> #potentialMethodsInFilter:` expose the search as GT-integration building blocks: the former composes a `GtSearchBPatternFilter` into a given search scope (used directly by `#gtMatchesFor:` and both Lepiter snippets below); the latter narrows that down to a lazy async stream of candidate methods — excluding Trait-composed methods, for the same `<origin, selector>` reason as `#uniqueUsers` above — for `BPatternRewrite` to rewrite.
+- `BPatternRewrite >> #executeRewriteInFilter:` streams candidates from `#potentialMethodsInFilter:` and compiles each rewritten method as it arrives, answering a `TAsyncFuture` of the resulting `RBNamespace` — fully non-blocking end to end, mirroring `LePharoRewriteSnippet`'s own async design.
 
 **New GT views and tools**
 
 - `BPattern` gets three new inspector tabs: **Matches**, **Metrics**, and **PatternAST**.
 - `GtSearchBPatternFilter` — a `GtSearchMethodsFilter` that lets a `BPattern` be composed into GT's search/scope pipeline (`&`, `|`, class/package scoping, etc.), with AST-match highlighting via `GtBPatternHighlighter`.
-- `String >> #gtBPatternMatches` and `BlockClosure >> #gtBPatternMatches` — one-line entry points that turn a pattern string or block straight into a live, spawnable `GtSearchBPatternFilter` object in GT.
-- A new **"BPattern rewrite" Lepiter snippet**: insert it into any Lepiter page to author a search/replace/scope BPattern rewrite right in your notes, run the search with the same highlighting as above, and preview the rewrite as a diff before applying it.
-- A `lepiter/` booklet (see Installation above) with development notes and a live demo of the snippet.
+- `BlockClosure >> #gtBPatternMatches` — a one-line entry point that turns a pattern block straight into a live, spawnable `GtSearchBPatternFilter` object in GT.
+- Two experimental Lepiter snippets, kept side by side for comparison:
+  - **"BPattern rewrite"** (`LePharoBPatternRewriteSnippet`): a single Pharo source editor (syntax-highlighted, with Smalltalk-aware word selection/navigation) that structurally parses its own source — `[ pattern ]` or `[ [search] -> [replace] ]` — to decide between a plain search and a rewrite, with a "Search in:" scope filter row and Search/Replace buttons.
+  - **"BPattern (evaluated)"** (`LePharoBPatternSnippet2`): built directly on GT's own `LePharoSnippet`, so it gets the real Pharo editor (completion, evaluation-error display) for free — its source is ordinary Pharo code (e.g. `[ anyVar isNil ifTrue: anyBlock ] bpattern`) that is evaluated on demand to get a `BPattern`/`BPatternRewrite` object, with the same scope row and always-enabled Search/Rewrite buttons.
+  - Both snippets delegate all search/rewrite execution to `BPattern`/`BPatternRewrite` themselves (see New API above) rather than implementing it twice, and both spawn their results — a search filter, or the rewritten `RBNamespace` once the async rewrite future resolves — via GT's own `spawnObject:`/`spawnFuture:` machinery, never blocking the UI.
+- A `lepiter/` booklet (see Installation above) with development notes and a live demo of both snippets.
 
 ## Reference
 
