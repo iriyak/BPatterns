@@ -1,5 +1,5 @@
 Class {
-	#name : 'LePharoBPatternSnippet2Element',
+	#name : 'LePharoBPatternSnippetElement',
 	#superclass : 'LePharoSnippetElement',
 	#instVars : [
 		'rewriteElement',
@@ -10,7 +10,7 @@ Class {
 }
 
 { #category : 'building' }
-LePharoBPatternSnippet2Element >> createLabel: aString [
+LePharoBPatternSnippetElement >> createLabel: aString [
 	^ BrLabel new
 		text: aString asRopedText;
 		aptitude: (BrGlamorousLabelAptitude new glamorousRegularFontAndSize
@@ -20,13 +20,13 @@ LePharoBPatternSnippet2Element >> createLabel: aString [
 ]
 
 { #category : 'scope' }
-LePharoBPatternSnippet2Element >> filterDescriptors [
+LePharoBPatternSnippetElement >> filterDescriptors [
 	snippetViewModel ifNil: [ ^ GtSearchFilter globalFilterDescriptors ].
 	^ self snippet filterDescriptorsUsing: self snippetContext
 ]
 
 { #category : 'Protocol (initialization) - 1 selector(s)' }
-LePharoBPatternSnippet2Element >> initialize [
+LePharoBPatternSnippetElement >> initialize [
 	| scopeElement filtersElement buttonsRow bpatternLabel |
 	super initialize.
 
@@ -90,13 +90,13 @@ LePharoBPatternSnippet2Element >> initialize [
 ]
 
 { #category : 'updating' }
-LePharoBPatternSnippet2Element >> onSnippetViewModelChanged [
+LePharoBPatternSnippetElement >> onSnippetViewModelChanged [
 	super onSnippetViewModelChanged.
 	self updateScope
 ]
 
 { #category : 'actions' }
-LePharoBPatternSnippet2Element >> performRewrite [
+LePharoBPatternSnippetElement >> performRewrite [
 	"Evaluate the snippet's source and, if it is a BPatternRewrite, spawn the executed
 	 rewrite (a TAsyncFuture of an RBNamespace with the rewritten classes) - non-blocking
 	 end to end via #spawnFuture:. An evaluation failure goes to the Inspector (worth
@@ -115,7 +115,7 @@ LePharoBPatternSnippet2Element >> performRewrite [
 ]
 
 { #category : 'actions' }
-LePharoBPatternSnippet2Element >> performSearch [
+LePharoBPatternSnippetElement >> performSearch [
 	"Evaluate the snippet's source and, if it is a BPattern (or a BPatternRewrite - use its
 	 #searchPattern), spawn the matching GtSearchBPatternFilter. An evaluation failure is
 	 worth inspecting (stack trace etc.), so that goes to the Inspector; a type mismatch is
@@ -135,7 +135,7 @@ LePharoBPatternSnippet2Element >> performSearch [
 ]
 
 { #category : 'scope' }
-LePharoBPatternSnippet2Element >> saveScope [
+LePharoBPatternSnippetElement >> saveScope [
 	rewriteElement
 		childNamed: #filtersElement
 		ifFound: [ :filtersElement |
@@ -158,20 +158,20 @@ LePharoBPatternSnippet2Element >> saveScope [
 ]
 
 { #category : 'accessing' }
-LePharoBPatternSnippet2Element >> scope [
+LePharoBPatternSnippetElement >> scope [
 	^ (snippetViewModel ifNotNil: [ self snippet ])
 		ifNotNil: [ :snippet | snippet scope ]
 ]
 
 { #category : 'accessing' }
-LePharoBPatternSnippet2Element >> scopeLabel [
+LePharoBPatternSnippetElement >> scopeLabel [
 	^ ((snippetViewModel ifNotNil: [ self snippet ])
 		ifNotNil: [ :snippet | snippet scope ifNotNil: [ :scope | scope trim ifEmpty: [ nil ] ] ])
 		ifNil: [ 'All methods' ]
 ]
 
 { #category : 'scope' }
-LePharoBPatternSnippet2Element >> searchFilter [
+LePharoBPatternSnippetElement >> searchFilter [
 	| filters |
 	filters := OrderedCollection new.
 	rewriteElement
@@ -183,33 +183,33 @@ LePharoBPatternSnippet2Element >> searchFilter [
 ]
 
 { #category : 'accessing' }
-LePharoBPatternSnippet2Element >> snippetContent [
+LePharoBPatternSnippetElement >> snippetContent [
 	^ contentElement
 ]
 
 { #category : 'accessing' }
-LePharoBPatternSnippet2Element >> snippetContext [
+LePharoBPatternSnippetElement >> snippetContext [
 	snippetViewModel snippetsCollectionDo: [ :each | ^ each sharedSnippetContext ].
 	^ nil
 ]
 
 { #category : 'subscriptions' }
-LePharoBPatternSnippet2Element >> subscribeToSnippetViewModel [
+LePharoBPatternSnippetElement >> subscribeToSnippetViewModel [
 	super subscribeToSnippetViewModel.
 	self snippetViewModel weak
-		when: LePharoBPatternSnippet2ScopeChanged
+		when: LePharoBPatternSnippetScopeChanged
 			send: #updateScope
 			to: self
 ]
 
 { #category : 'subscriptions' }
-LePharoBPatternSnippet2Element >> unsubscribeFromSnippetViewModel [
+LePharoBPatternSnippetElement >> unsubscribeFromSnippetViewModel [
 	super unsubscribeFromSnippetViewModel.
 	self snippetViewModel unsubscribe: self
 ]
 
 { #category : 'scope' }
-LePharoBPatternSnippet2Element >> updateScope [
+LePharoBPatternSnippetElement >> updateScope [
 	rewriteElement
 		childNamed: #filtersElement
 		ifFound: [ :filtersElement |

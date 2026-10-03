@@ -1,32 +1,32 @@
 Class {
-	#name : 'LePharoBPatternSnippet2ViewModel',
+	#name : 'LePharoBPatternSnippetViewModel',
 	#superclass : 'LePharoSnippetViewModel',
 	#category : 'BPatterns-LepiterSnippet',
 	#package : 'BPatterns-LepiterSnippet'
 }
 
 { #category : 'accessing' }
-LePharoBPatternSnippet2ViewModel >> snippetElementClass [
-	^ LePharoBPatternSnippet2Element
+LePharoBPatternSnippetViewModel >> snippetElementClass [
+	^ LePharoBPatternSnippetElement
 ]
 
 { #category : 'accessing' }
-LePharoBPatternSnippet2ViewModel >> snippetView [
+LePharoBPatternSnippetViewModel >> snippetView [
 	<return: #LeSnippetView>
 	^ super snippetView needsContentDecorationBar: true
 ]
 
 { #category : 'subscriptions' }
-LePharoBPatternSnippet2ViewModel >> subscribeToSnippetModel [
+LePharoBPatternSnippetViewModel >> subscribeToSnippetModel [
 	super subscribeToSnippetModel.
 	self snippetModel weak
-		when: LePharoBPatternSnippet2ScopeChanged
+		when: LePharoBPatternSnippetScopeChanged
 			send: #announce:
 			to: self
 ]
 
 { #category : 'subscriptions' }
-LePharoBPatternSnippet2ViewModel >> unsubscribeFromSnippetModel [
+LePharoBPatternSnippetViewModel >> unsubscribeFromSnippetModel [
 	super unsubscribeFromSnippetModel.
 	self snippetModel unsubscribe: self
 ]

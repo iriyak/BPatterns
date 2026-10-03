@@ -1,5 +1,5 @@
 Class {
-	#name : 'LePharoBPatternSnippet2ScopeChanged',
+	#name : 'LePharoBPatternSnippetScopeChanged',
 	#superclass : 'LeSnippetContentChanged',
 	#instVars : [
 		'scope'
@@ -9,11 +9,11 @@ Class {
 }
 
 { #category : 'accessing' }
-LePharoBPatternSnippet2ScopeChanged >> scope [
+LePharoBPatternSnippetScopeChanged >> scope [
 	^ scope
 ]
 
 { #category : 'accessing' }
-LePharoBPatternSnippet2ScopeChanged >> scope: aString [
+LePharoBPatternSnippetScopeChanged >> scope: aString [
 	scope := aString
 ]

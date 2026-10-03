@@ -1,5 +1,5 @@
 Class {
-	#name : 'LePharoBPatternSnippet2',
+	#name : 'LePharoBPatternSnippet',
 	#superclass : 'LePharoSnippet',
 	#instVars : [
 		'scope'
@@ -9,7 +9,7 @@ Class {
 }
 
 { #category : 'menu' }
-LePharoBPatternSnippet2 class >> contextMenuItemSpecification [
+LePharoBPatternSnippet class >> contextMenuItemSpecification [
 	<leSnippetSpecification>
 	^ LeContextMenuItemSpecification new
 		snippetClass: self;
@@ -17,41 +17,41 @@ LePharoBPatternSnippet2 class >> contextMenuItemSpecification [
 ]
 
 { #category : 'accessing' }
-LePharoBPatternSnippet2 class >> description [
+LePharoBPatternSnippet class >> description [
 	^ 'BPattern (evaluated)'
 ]
 
 { #category : 'persistence' }
-LePharoBPatternSnippet2 class >> leJsonV3AttributeMapping [
+LePharoBPatternSnippet class >> leJsonV3AttributeMapping [
 	^ super leJsonV3AttributeMapping
 		add: #scope -> #scope;
 		yourself
 ]
 
 { #category : 'persistence' }
-LePharoBPatternSnippet2 class >> leJsonV3Name [
+LePharoBPatternSnippet class >> leJsonV3Name [
 	^ 'bpatternSnippet2'
 ]
 
 { #category : 'persistence' }
-LePharoBPatternSnippet2 class >> leJsonV4AttributeMapping [
+LePharoBPatternSnippet class >> leJsonV4AttributeMapping [
 	^ super leJsonV4AttributeMapping
 		add: #scope -> #scope;
 		yourself
 ]
 
 { #category : 'persistence' }
-LePharoBPatternSnippet2 class >> leJsonV4Name [
+LePharoBPatternSnippet class >> leJsonV4Name [
 	^ 'bpatternSnippet2'
 ]
 
 { #category : 'converting' }
-LePharoBPatternSnippet2 >> asSnippetViewModel [
-	^ LePharoBPatternSnippet2ViewModel new snippetModel: self
+LePharoBPatternSnippet >> asSnippetViewModel [
+	^ LePharoBPatternSnippetViewModel new snippetModel: self
 ]
 
 { #category : 'evaluating' }
-LePharoBPatternSnippet2 >> evaluateThenDo: aBlock [
+LePharoBPatternSnippet >> evaluateThenDo: aBlock [
 	"Evaluate #code in my coder's context and pass the GtSourceCoderEvaluationResult to aBlock.
 	 Keeps the coder/code plumbing private to the model - callers (the Element's buttons) only
 	 ever see the result."
@@ -60,7 +60,7 @@ LePharoBPatternSnippet2 >> evaluateThenDo: aBlock [
 ]
 
 { #category : 'scope' }
-LePharoBPatternSnippet2 >> filterDescriptorNamesAndValuesDo: aBlock [
+LePharoBPatternSnippet >> filterDescriptorNamesAndValuesDo: aBlock [
 	(scope isNil or: [ scope isEmpty ]) ifTrue: [ ^ self ].
 	scope first = $# ifFalse: [ ^ aBlock cull: scope cull: '' ].
 	^ (RBParser parseExpression: scope) value
@@ -71,7 +71,7 @@ LePharoBPatternSnippet2 >> filterDescriptorNamesAndValuesDo: aBlock [
 ]
 
 { #category : 'scope' }
-LePharoBPatternSnippet2 >> filterDescriptorsUsing: snippetContext [
+LePharoBPatternSnippet >> filterDescriptorsUsing: snippetContext [
 	| variableBindings descriptors variables |
 	descriptors := GtSearchFilter globalFilterDescriptors.
 	(snippetContext notNil and: [ snippetContext hasSelfObject ])
@@ -114,15 +114,15 @@ LePharoBPatternSnippet2 >> filterDescriptorsUsing: snippetContext [
 ]
 
 { #category : 'accessing' }
-LePharoBPatternSnippet2 >> scope [
+LePharoBPatternSnippet >> scope [
 	^ scope
 ]
 
 { #category : 'accessing' }
-LePharoBPatternSnippet2 >> scope: aString [
+LePharoBPatternSnippet >> scope: aString [
 	scope := aString.
 	self
-		notifyAnnouncement: (LePharoBPatternSnippet2ScopeChanged new
+		notifyAnnouncement: (LePharoBPatternSnippetScopeChanged new
 				source: self;
 				snippet: self;
 				scope: aString)
