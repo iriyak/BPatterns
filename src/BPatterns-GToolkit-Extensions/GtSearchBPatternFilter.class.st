@@ -1,7 +1,7 @@
 "
 I am a `GtSearchMethodsFilter` that lets a `BPattern` take part in GT's search/scope pipeline: I include a method when `bpattern matchesMethod:` it, and I compose with other filters as usual (`&`, `|`, class and package scoping).
 
-I am created by `BPattern>>#executeSearchInFilter:` (intersected with the given scope filter, when there is one), by `BPattern>>#gtMatchesFor:` (the inspector's Matches tab) and by `BlockClosure>>#gtBPatternMatches` (`[ pattern ] gtBPatternMatches`). `#highlighter` answers a `GtBPatternHighlighter` so results show the matched region; `#source` is the pattern's `displayString`. Two of me are equal when their patterns are.
+I am created by `BPattern>>#executeSearchInFilter:` (intersected with the given scope filter, when there is one), by the inspector's Search buttons (`BPattern>>#gtSearchActionFor:`, `BPatternRewrite>>#gtSearchActionFor:`) and by `BlockClosure>>#gtBPatternMatches` (`[ pattern ] gtBPatternMatches`). `#highlighter` answers a `GtBPatternHighlighter` so results show the matched region; `#source` is the pattern's `displayString`. Two of me are equal when their patterns are.
 "
 Class {
 	#name : 'GtSearchBPatternFilter',
