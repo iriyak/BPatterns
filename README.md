@@ -22,7 +22,7 @@ Metacello new
   load: #('Core' 'CoreTests')
 ```
 
-This repository also ships a Lepiter booklet under `lepiter/` (development notes, and a live demo of two BPattern search/rewrite snippets — see [Implementation notes](IMPLEMENTATION_NOTES.md)). Once the project is loaded via Iceberg, register it with your Lepiter database and open it from GT's Lepiter browser:
+This repository also ships a Lepiter database under `lepiter/` with one page, **Getting started with BPatterns in GT**: runnable examples of building a `BPattern`/`BPatternRewrite`, searching and rewriting programmatically, and using the BPattern (code) snippet (see [Implementation notes](IMPLEMENTATION_NOTES.md)). Once the project is loaded via Iceberg, register it with your Lepiter database and open the page from GT's Lepiter browser:
 
 ```Smalltalk
 #BaselineOfBPatterns asClass loadLepiter
