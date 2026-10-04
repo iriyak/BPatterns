@@ -62,16 +62,14 @@ LePharoBPatternSnippetElement >> initialize [
 		addChild: (BrButton new
 				margin: (BlInsets right: 5);
 				beSmallSize;
-				aptitude: BrGlamorousButtonWithIconAptitude;
-				icon: BrGlamorousVectorIcons playinspect asElement;
+				aptitude: BrGlamorousButtonWithLabelAptitude;
 				label: 'Search' asString;
 				action: [ self performSearch ])
 		as: #searchButton.
 	buttonsRow
 		addChild: (BrButton new
 				beSmallSize;
-				aptitude: BrGlamorousButtonWithIconAptitude;
-				icon: BrGlamorousVectorIcons playinspect asElement;
+				aptitude: BrGlamorousButtonWithLabelAptitude;
 				label: 'Rewrite' asString;
 				action: [ self performRewrite ])
 		as: #rewriteButton.
