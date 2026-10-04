@@ -35,9 +35,12 @@ See [Implementation notes](IMPLEMENTATION_NOTES.md) for how and why each of thes
 
 - [Original README](https://github.com/dionisiydk/BPatterns/blob/main/README.md) — BPattern basics, pattern configuration (variable/global/literal/selector patterns), `#bmethod`, `#brewrite`.
 - [Original repository](https://github.com/dionisiydk/BPatterns)
-- [This fork](https://github.com/iriyak/BPatterns)
 
 ## License
 
-MIT License. Original work Copyright (c) 2025 [Denis Kudriashov](https://github.com/dionisiydk); fork additions Copyright (c) 2026 Kazunori Iriya. See [LICENSE](LICENSE) for the full text.
-
+MIT License.
+```
+Copyright (c) 2025 Denis Kudriashov
+Copyright (c) 2026 Kazunori Iriya (fork additions)
+```
+See [LICENSE](LICENSE) for the full text.
