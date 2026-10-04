@@ -4,11 +4,11 @@ This document covers what's different in this fork from the original BPatterns, 
 
 ## Changes
 
-- **Breaking:** The pattern engine now builds on Pharo's `RB*` (RefactoringBrowser) AST/searcher classes instead of `OC*` (OpenChain), to match what GT itself uses.
+- **Breaking:** The pattern engine now builds on Pharo's `RB*` (RefactoringBrowser) AST/searcher classes instead of `OC*` (OpalCompiler), to match what GT itself uses.
 - `BPattern >> #users` / `#usersInClass:` are re-implemented on top of GT's own search-filter framework (`GtSearchBPatternFilter`) instead of a manual `Smalltalk allClasses` scan.
 - `BPattern >> #uniqueUsers` / `#uniqueUsersInClass:` return matching methods de-duplicated by origin (`<origin, selector>`), so a method composed into many classes from a single Trait is only reported once — as opposed to `#users`/`#usersInClass:`, which answer one result per distinct `<methodClass, selector>` pair (every method actually installed in the system, including one per Trait composition). Both are correct; they just answer different questions.
 
-## API
+## API and Additions
 
 - `BPattern >> #executeSearchInFilter:` and `BPattern >> #potentialMethodsInFilter:` expose the search as GT-integration building blocks: the former composes a `GtSearchBPatternFilter` into a given search scope, excluding Trait-composed methods (`isFromTrait`) — one result per `<origin, selector>` pair, the same set as `#uniqueUsers` and for the same reason — and is what the inspector's Search buttons and both Lepiter snippets below call, so their result counts match `#uniqueUsers`, not `#users`; the latter turns that into a lazy async stream of candidate methods for `BPatternRewrite` to rewrite.
 - `BPatternRewrite >> #executeRewriteInFilter:` streams candidates from `#potentialMethodsInFilter:` and compiles each rewritten method as it arrives, answering a `TAsyncFuture` of the resulting `RBNamespace` — fully non-blocking end to end, mirroring `LePharoRewriteSnippet`'s own async design. A script that needs the result synchronously can call `#wait` on the future (blocking), as the Lepiter page does.
@@ -25,9 +25,9 @@ This document covers what's different in this fork from the original BPatterns, 
 ### Lepiter snippets
 
 - Two experimental Lepiter snippets, kept side by side for comparison:
-  - **"BPattern (code)"** (`LePharoBPatternSnippet`): built directly on GT's own `LePharoSnippet`, so it gets the real Pharo editor (completion, evaluation-error display) for free — its source is ordinary Pharo code (e.g. `[ anyVar isNil ifTrue: anyBlock ] bpattern`) that is evaluated on demand to get a `BPattern`/`BPatternRewrite` object, with the same scope row and always-enabled Search/Rewrite buttons.
+  - **"BPattern (code)"** (`LePharoBPatternSnippet`): built directly on GT's own `LePharoSnippet`, so it gets the real Pharo editor (completion, evaluation-error display) for free — its source is ordinary Pharo code (e.g. `[ anyVar isNil ifTrue: anyBlock ] bpattern`) that is evaluated on demand to get a `BPattern`/`BPatternRewrite` object, with a "Search in:" scope row at the level of the Pharo rewrite snippet's own (the global search filters, the snippet context's `self`, and the snippet's variables — e.g. a `scope := ...` filter defined in an earlier snippet) and always-enabled Search/Rewrite buttons.
   - **"BPattern (literal)"** (`LePharoBPatternLiteralSnippet`): a single Pharo source editor (syntax-highlighted, with Smalltalk-aware word selection/navigation) that structurally parses its own source — `[ pattern ]` or `[ [search] -> [replace] ]` — to decide between a plain search and a rewrite, with a "Search in:" scope filter row and Search/Replace buttons. *(Currently excluded from Spotter's "Add page with snippet" list and the Lepiter + insert-snippet menu — see `LePharoBPatternLiteralSnippet class >> #contextMenuItemSpecification`.)*
-  - Both snippets delegate all search/rewrite execution to `BPattern`/`BPatternRewrite` themselves (see API above) rather than implementing it twice, and both spawn their results — a search filter, or the rewritten `RBNamespace` once the async rewrite future resolves — via GT's own `spawnObject:`/`spawnFuture:` machinery, never blocking the UI.
+  - Both snippets delegate all search/rewrite execution to `BPattern`/`BPatternRewrite` themselves (see API and Additions above) rather than implementing it twice, and both spawn their results — a search filter, or the rewritten `RBNamespace` once the async rewrite future resolves — via GT's own `spawnObject:`/`spawnFuture:` machinery, never blocking the UI.
 
 ### Lepiter database
 

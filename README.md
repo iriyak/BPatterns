@@ -1,8 +1,8 @@
-# BPatterns (GT-adapted fork)
+# BPatterns for Glamorous Toolkit
 
 This is a fork of [dionisiydk/BPatterns](https://github.com/dionisiydk/BPatterns), adapted for and tested in [Glamorous Toolkit (GT)](https://gtoolkit.com/) by [Kazunori Iriya](https://github.com/iriyak).  It keeps the original scripting/search/rewrite API intact and adds a GT-native search, inspection, and Lepiter-notebook integration layer on top of it.
 
-For the full description of BPatterns itself (what a `BPattern` is, pattern configuration, `#bmethod`/`#brewrite`, etc.), see the **[original README](https://github.com/dionisiydk/BPatterns/blob/main/README.md)** — this document only covers what's different in this fork.
+See the **[original README](https://github.com/dionisiydk/BPatterns/blob/main/README.md)** for the full description of BPatterns itself (what a `BPattern` is, pattern configuration, `#bmethod`/`#brewrite`, etc.); this document only covers what's different in this fork.
 
 ## Installation
 
@@ -15,7 +15,7 @@ Metacello new
   load
 ```
 
-Once the project is loaded into Iceberg as `BPatterns` (`loadLepiter` looks the repository up by that name), register its `lepiter/` database with your Lepiter database and open the page from GT's Lepiter browser:
+Register the `lepiter/` database with your Lepiter database and open the page from GT's Lepiter browser, once the project is loaded into Iceberg as `BPatterns` (`loadLepiter` looks the repository up by that name):
 
 ```Smalltalk
 #BaselineOfBPatterns asClass loadLepiter
