@@ -1,3 +1,6 @@
+"
+I am the view model of `LePharoBPatternSnippet`, a `LePharoSnippetViewModel`: I create `LePharoBPatternSnippetElement` as its view, and forward the model's `LePharoBPatternSnippetScopeChanged` announcements to it.
+"
 Class {
 	#name : 'LePharoBPatternSnippetViewModel',
 	#superclass : 'LePharoSnippetViewModel',

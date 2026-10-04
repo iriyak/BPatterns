@@ -1,3 +1,8 @@
+"
+I highlight the regions of a method's source that a `BPattern` matches. I am a `GtPharoCodeHighlighter` answered by `GtSearchBPatternFilter>>#highlighter`, which is how GT's generic search-results view marks the matched part of each result method.
+
+`#style:ast:` runs `BPattern>>#scanAST:do:` over the method's AST and styles the `gtInterestingHighlightingIntervals` of every matched node. The AST comes from `method` when it is set explicitly, else from the compiled method of the coder view model I am attached to; failing both, the text itself is parsed (tolerating syntax errors via `RBParser parseFaultyMethod:`).
+"
 Class {
 	#name : 'GtBPatternHighlighter',
 	#superclass : 'GtPharoCodeHighlighter',

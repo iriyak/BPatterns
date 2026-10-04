@@ -1,3 +1,6 @@
+"
+I am the view of `LePharoBPatternSnippet`, a `LePharoSnippetElement` (so the Pharo editor and evaluation display are inherited). I add a ""Search in:"" scope-filter row and Search/Rewrite buttons: `#performSearch` evaluates the source and spawns the matching `GtSearchBPatternFilter` (a `BPatternRewrite` contributes its search pattern); `#performRewrite` spawns the async rewrite (a `TAsyncFuture` of an `RBNamespace`) via `spawnFuture:`. A failed evaluation goes to the Inspector; a result of the wrong type is just an `#inform:` notice. A small ""BPattern"" label floats in the top-right corner, as in `LePharoBPatternLiteralSnippetElement`.
+"
 Class {
 	#name : 'LePharoBPatternSnippetElement',
 	#superclass : 'LePharoSnippetElement',
@@ -137,6 +140,9 @@ LePharoBPatternSnippetElement >> performSearch [
 
 { #category : 'scope' }
 LePharoBPatternSnippetElement >> saveScope [
+	"Store the ""Search in:"" filters as a literal-array string in the model's #scope (see
+	 #filterDescriptorNamesAndValuesDo: for the format)."
+
 	rewriteElement
 		childNamed: #filtersElement
 		ifFound: [ :filtersElement |
@@ -173,6 +179,9 @@ LePharoBPatternSnippetElement >> scopeLabel [
 
 { #category : 'scope' }
 LePharoBPatternSnippetElement >> searchFilter [
+	"Answer the intersection (&) of the filters currently chosen in the ""Search in:"" row,
+	 or nil when there are none (meaning: search all methods)."
+
 	| filters |
 	filters := OrderedCollection new.
 	rewriteElement
@@ -211,6 +220,9 @@ LePharoBPatternSnippetElement >> unsubscribeFromSnippetViewModel [
 
 { #category : 'scope' }
 LePharoBPatternSnippetElement >> updateScope [
+	"Rebuild the ""Search in:"" row from the model's #scope; if that leaves no filter, add
+	 the first available descriptor so the row is never empty."
+
 	rewriteElement
 		childNamed: #filtersElement
 		ifFound: [ :filtersElement |

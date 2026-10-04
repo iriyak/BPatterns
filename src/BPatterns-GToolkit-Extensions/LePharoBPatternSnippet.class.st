@@ -1,3 +1,8 @@
+"
+I am a Lepiter snippet built on GT's own `LePharoSnippet`, so I get the real Pharo editor (completion, evaluation-error display) for free. My source is ordinary Pharo code - e.g. `[ anyVar isNil ifTrue: anyBlock ] bpattern` - that is evaluated on demand (`#evaluateThenDo:`) to a `BPattern` or `BPatternRewrite`; the Search and Rewrite buttons of `LePharoBPatternSnippetElement` work on that value. (Compare `LePharoBPatternLiteralSnippet`, whose source is only parsed, never evaluated.)
+
+`scope` holds the ""Search in:"" filters as a string; `#filterDescriptorsUsing:` also offers the context's `self` and the snippet's variables as scope filters. Both `scope` and the source are persisted (JSON type name `bpatternSnippet2`, kept from this class's earlier name so existing pages still load).
+"
 Class {
 	#name : 'LePharoBPatternSnippet',
 	#superclass : 'LePharoSnippet',
@@ -62,6 +67,11 @@ LePharoBPatternSnippet >> evaluateThenDo: aBlock [
 
 { #category : 'scope' }
 LePharoBPatternSnippet >> filterDescriptorNamesAndValuesDo: aBlock [
+	"Evaluate aBlock with the name and value (nil when there is none) of each ""Search in:""
+	 filter stored in #scope. A scope that does not start with `#` is a single filter name;
+	 otherwise it is the literal array written by the element's #saveScope, of names and
+	 (name value) pairs."
+
 	(scope isNil or: [ scope isEmpty ]) ifTrue: [ ^ self ].
 	scope first = $# ifFalse: [ ^ aBlock cull: scope cull: '' ].
 	^ (RBParser parseExpression: scope) value
@@ -73,6 +83,11 @@ LePharoBPatternSnippet >> filterDescriptorNamesAndValuesDo: aBlock [
 
 { #category : 'scope' }
 LePharoBPatternSnippet >> filterDescriptorsUsing: snippetContext [
+	"Answer the filter descriptors offered by the ""Search in:"" row: GT's global descriptors
+	 and, in front of them, the snippet context's `self` object (as a filter when it is one,
+	 else its class's methods) and the snippet's variables that are unbound or hold search
+	 filters."
+
 	| variableBindings descriptors variables |
 	descriptors := GtSearchFilter globalFilterDescriptors.
 	(snippetContext notNil and: [ snippetContext hasSelfObject ])

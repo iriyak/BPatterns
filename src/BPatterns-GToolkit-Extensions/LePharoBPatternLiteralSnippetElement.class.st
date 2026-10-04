@@ -1,15 +1,15 @@
 "
 I am the `LeSnippetElement` (view) for `LePharoBPatternLiteralSnippet`, by analogy with `LePharoRewriteSnippetElement`.
 
-Unlike `LePharoRewriteSnippetElement`, I do *not* implement the backtick-pattern authoring context menu (""Match any message"", ""Rename variable"", ""Add statement"", ...): that whole apparatus is built around `GtPharoPatternParser`'s backtick meta-syntax (``@args``, ``.Stmt``, ...), which `BPattern` doesn't use - its search/replace fields hold ordinary Pharo block source, where `any`-prefixed names are already wildcards. So my two source editors are plain Pharo editors: I reuse `GtPharoStyler` (the ordinary Pharo AST styler, i.e. `GtPharoPatternStyler`'s own superclass minus the backtick-specific overrides) with `GtPharoParser`'s statement-sequence starting state, the same one `LePharoRewriteSnippetElement` itself resolves via `GtPharoParser startingStateForMethodSequence`. No completion strategy is wired up for now (v1); can be added later if useful.
+Unlike `LePharoRewriteSnippetElement`, I do *not* implement the backtick-pattern authoring context menu (""Match any message"", ""Rename variable"", ""Add statement"", ...): that whole apparatus is built around `GtPharoPatternParser`'s backtick meta-syntax (``@args``, ``.Stmt``, ...), which `BPattern` doesn't use - its source is ordinary Pharo block source, where `any`-prefixed names are already wildcards. So I have a single source editor, a plain Pharo editor: I reuse `GtPharoStyler` (the ordinary Pharo AST styler, i.e. `GtPharoPatternStyler`'s own superclass minus the backtick-specific overrides) with `GtPharoParser`'s statement-sequence starting state, the same one `LePharoRewriteSnippetElement` itself resolves via `GtPharoParser startingStateForMethodSequence`. That one editor holds either a plain search (`[ pattern ]`) or a rewrite (`[ [search] -> [replace] ]`); `LePharoBPatternLiteralSnippet>>#isRewrite` tells which, and the Replace button is only enabled for the latter (see `#updateReplaceButtonEnabled`). No completion strategy is wired up for now (v1); can be added later if useful.
 
 I have no `isMethodPattern` toggle for the same reason the model doesn't: not supported yet.
 
-One small, deliberate naming fix versus the original: `LePharoRewriteSnippetElement` has both an ivar *and* a same-named instance method called `rewriteElement` (the ivar is the whole widget tree; the method builds the async rewrite-preview widget spawned by the Replace button) - legal Smalltalk, but confusing to read. I renamed the method to `#rewritePreviewElement` to keep the two apart.
+My layout is: a ""Search in:"" scope-filter row (`GtFiltersElement`), the source editor, and a row with the Search and Replace buttons, all inside the `rewriteElement` widget tree (the form everything else is looked up from by name).
 
-The Search button spawns `self snippet executeSearchInFilter: self searchFilter` directly as an object - since that is a `GtSearchBPatternFilter` (or an intersection with it), GT already renders it with the generic search-results view, using `GtSearchBPatternFilter>>#highlighter` (`GtBPatternHighlighter`) to highlight the matched region in each result - so match highlighting comes for free here, the same as it does in `BPattern>>#gtMatchesFor:`.
+The Search button spawns `self snippet executeSearchInFilter: self searchFilter` directly as an object - since that is a `GtSearchBPatternFilter` (or an intersection with it), GT already renders it with the generic search-results view, using `GtSearchBPatternFilter>>#highlighter` (`GtBPatternHighlighter`) to highlight the matched region in each result - so match highlighting comes for free here, the same as it does in `BPattern>>#gtMatchesFor:`. The Replace button spawns `self snippet executeRewriteInFilter: self searchFilter` (a `TAsyncFuture` of the rewritten `RBNamespace`) via `spawnFuture:`.
 
-`contentElement` floats a small gray ""BPattern"" label in the top-right corner of the snippet, the same overlay technique `LeExternalEvaluatedSnippetElement>>#initializeLanguageElement` uses for its language/connection label (a `BrFrame` with the real content plus the label, the label constrained `alignRight`/`alignTop`). `#snippetContent` returns this frame; `rewriteElement` (the actual form) is still the widget everything else (editors, buttons, scope filters) is built into and looked up by name from. This exists purely so a BPattern rewrite snippet stays visually distinguishable from a Pharo Rewrite Snippet at a glance, since the two look otherwise near-identical.
+`contentElement` floats a small gray ""BPattern"" label in the top-right corner of the snippet, the same overlay technique `LeExternalEvaluatedSnippetElement>>#initializeLanguageElement` uses for its language/connection label (a `BrFrame` with the real content plus the label, the label constrained `alignRight`/`alignTop`). `#snippetContent` returns this frame. This exists purely so a BPattern (literal) snippet stays visually distinguishable from a Pharo Rewrite Snippet at a glance, since the two look otherwise near-identical.
 
 "
 Class {
@@ -113,7 +113,7 @@ LePharoBPatternLiteralSnippetElement >> initialize [
 
 	"Float a small 'BPattern' badge in the top-right corner, the same technique
 	 LeExternalEvaluatedSnippetElement uses for its language/connection label,
-	 so a BPattern rewrite snippet stays visually distinguishable from a Pharo
+	 so a BPattern (literal) snippet stays visually distinguishable from a Pharo
 	 Rewrite Snippet at a glance, not just at insertion time."
 	bpatternLabel := BrLabel new
 		aptitude: (BrGlamorousLabelAptitude new glamorousRegularSmallSize
@@ -138,6 +138,9 @@ LePharoBPatternLiteralSnippetElement >> onSnippetViewModelChanged [
 
 { #category : 'initialization' }
 LePharoBPatternLiteralSnippetElement >> saveScope [
+	"Store the ""Search in:"" filters as a literal-array string in the model's #scope (see
+	 #filterDescriptorNamesAndValuesDo: for the format)."
+
 	rewriteElement
 		childNamed: #filtersElement
 		ifFound: [ :filtersElement |
@@ -174,6 +177,9 @@ LePharoBPatternLiteralSnippetElement >> scopeLabel [
 
 { #category : 'initialization' }
 LePharoBPatternLiteralSnippetElement >> searchFilter [
+	"Answer the intersection (&) of the filters currently chosen in the ""Search in:"" row,
+	 or nil when there are none (meaning: search all methods)."
+
 	| filters |
 	filters := OrderedCollection new.
 	rewriteElement
@@ -191,6 +197,9 @@ LePharoBPatternLiteralSnippetElement >> snippetContent [
 
 { #category : 'initialization' }
 LePharoBPatternLiteralSnippetElement >> snippetContext [
+	"Answer the shared snippet context of the page's snippets (used for `self` and variable
+	 bindings), or nil."
+
 	snippetViewModel snippetsCollectionDo: [ :each | ^ each sharedSnippetContext ].
 	^ nil
 ]
@@ -247,6 +256,9 @@ LePharoBPatternLiteralSnippetElement >> updateReplaceButtonEnabled [
 
 { #category : 'accessing' }
 LePharoBPatternLiteralSnippetElement >> updateScope [
+	"Rebuild the ""Search in:"" row from the model's #scope; if that leaves no filter, add
+	 the first available descriptor so the row is never empty."
+
 	rewriteElement
 		childNamed: #filtersElement
 		ifFound: [ :filtersElement |
@@ -263,6 +275,8 @@ LePharoBPatternLiteralSnippetElement >> updateScope [
 
 { #category : 'private' }
 LePharoBPatternLiteralSnippetElement >> updateSource [
+	"Push the editor's text into the model when it differs, then refresh the Replace button."
+
 	self
 		sourceEditorDo: [ :editor |
 			| sourceString |
@@ -274,6 +288,9 @@ LePharoBPatternLiteralSnippetElement >> updateSource [
 
 { #category : 'api - snippet view model' }
 LePharoBPatternLiteralSnippetElement >> updateSourceEditor [
+	"Pull the model's source into the editor when it differs, then refresh the Replace
+	 button."
+
 	rewriteElement
 		childNamed: #sourceEditor
 		ifFound: [ :editor |

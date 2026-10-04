@@ -242,6 +242,9 @@ BPattern >> rewriteAST: originalAST with: rewritePattern [
 
 { #category : 'scanning' }
 BPattern >> scanAST: anAST do: nodeBlock [
+	"Evaluate nodeBlock for every node of anAST that matches the pattern, passing the matched
+	 node and (optionally) the match context."
+
 	| searcher |
 	
 	searcher := RBParseTreeSearcher new.
@@ -253,6 +256,11 @@ BPattern >> scanAST: anAST do: nodeBlock [
 
 { #category : 'private' }
 BPattern >> uniqueMethodsFrom: methods [
+	"Answer methods, keeping only the first one seen for each distinct <origin, selector>
+	 pair and answering the origin's own method (`origin >> selector`) in its place - so a
+	 method composed into many classes from one Trait is reported once, as the Trait's own
+	 method."
+
 	| seenOrigins |
 	seenOrigins := Set new.
 	^ (methods select: [ :each |

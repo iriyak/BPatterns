@@ -1,3 +1,6 @@
+"
+I am announced by `LePharoBPatternSnippet>>#scope:` when the snippet's ""Search in:"" scope changes; `scope` is the new scope string.
+"
 Class {
 	#name : 'LePharoBPatternSnippetScopeChanged',
 	#superclass : 'LeSnippetContentChanged',

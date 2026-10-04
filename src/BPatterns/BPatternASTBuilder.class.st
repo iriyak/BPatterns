@@ -34,6 +34,9 @@ BPatternASTBuilder >> appliedConfigs [
 
 { #category : 'visiting' }
 BPatternASTBuilder >> applyConfigsFor: aNode [
+	"Apply every config that matches aNode, remembering each one in #appliedConfigs so that
+	 BPattern>>#applyConfigs can later warn about #with: configs that never matched anything."
+
 	patternConfigs 
 		select: [ :each | each isForNode: aNode ] 
 		thenDo: [ :each | 

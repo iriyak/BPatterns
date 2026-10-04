@@ -54,5 +54,8 @@ BPatternSpecificSelectorsConfig >> printOn: aStream [
 
 { #category : 'testing' }
 BPatternSpecificSelectorsConfig >> warnsWhenUnmatched [
+	"True: I target a specific name, so never matching means that name was probably mistyped
+	 (see BPatternConfig>>#warnsWhenUnmatched)."
+
 	^ true
 ]

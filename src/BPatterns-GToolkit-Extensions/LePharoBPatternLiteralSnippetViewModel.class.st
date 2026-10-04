@@ -1,3 +1,6 @@
+"
+I am the view model of `LePharoBPatternLiteralSnippet`: I create `LePharoBPatternLiteralSnippetElement` as its view, and forward the model's `LePharoBPatternLiteralSnippetSourceChanged` and `LePharoBPatternLiteralSnippetScopeChanged` announcements to it.
+"
 Class {
 	#name : 'LePharoBPatternLiteralSnippetViewModel',
 	#superclass : 'LeSnippetViewModel',

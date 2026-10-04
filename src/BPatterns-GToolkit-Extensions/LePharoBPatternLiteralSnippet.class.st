@@ -1,3 +1,8 @@
+"
+I am a Lepiter snippet that holds a BPattern search or rewrite written literally as Pharo block source: `[ pattern ]` for a search, `[ [ search ] -> [ replace ] ]` for a rewrite. Unlike `LePharoBPatternSnippet`, my `source` is never evaluated: I only parse it (`#parsedSourceNode`, `#rewriteMessageNode`) to tell the two forms apart (`#isRewrite`) and to build a `BPattern` / `BPatternRewrite` from the block ASTs (`#bpattern`, `#bpatternRewrite`).
+
+`scope` holds the ""Search in:"" filters as a string. Both `source` and `scope` are persisted (JSON type name `bpatternRewrite`, kept from this class's earlier name so existing pages still load). `#executeSearchInFilter:` and `#executeRewriteInFilter:` delegate to `BPattern` / `BPatternRewrite`. My view is `LePharoBPatternLiteralSnippetElement`, created through `LePharoBPatternLiteralSnippetViewModel`. I am currently left out of Spotter's and Lepiter's insert-snippet lists (see `#contextMenuItemSpecification`).
+"
 Class {
 	#name : 'LePharoBPatternLiteralSnippet',
 	#superclass : 'LeSnippet',
@@ -90,8 +95,7 @@ LePharoBPatternLiteralSnippet >> contentAsString [
 
 { #category : 'executing' }
 LePharoBPatternLiteralSnippet >> executeRewriteInFilter: aFilter [
-	"Delegate to BPatternRewrite itself - answers a TAsyncFuture now (non-blocking), where
-	 it used to build and return an RBNamespace synchronously."
+	"Delegate to BPatternRewrite itself - answers a TAsyncFuture (non-blocking)."
 
 	<return: #TAsyncFuture>
 	^ self bpatternRewrite executeRewriteInFilter: aFilter
@@ -99,7 +103,7 @@ LePharoBPatternLiteralSnippet >> executeRewriteInFilter: aFilter [
 
 { #category : 'executing' }
 LePharoBPatternLiteralSnippet >> executeSearchInFilter: aFilter [
-	"Delegate to BPattern itself - this is purely GT-integration plumbing now, not snippet
+	"Delegate to BPattern itself - purely GT-integration plumbing, no snippet
 	 logic of its own."
 
 	^ self bpattern executeSearchInFilter: aFilter
@@ -107,6 +111,11 @@ LePharoBPatternLiteralSnippet >> executeSearchInFilter: aFilter [
 
 { #category : 'scope' }
 LePharoBPatternLiteralSnippet >> filterDescriptorNamesAndValuesDo: aBlock [
+	"Evaluate aBlock with the name and value (nil when there is none) of each ""Search in:""
+	 filter stored in #scope. A scope that does not start with `#` is a single filter name;
+	 otherwise it is the literal array written by the element's #saveScope, of names and
+	 (name value) pairs."
+
 	(scope isNil or: [ scope isEmpty ]) ifTrue: [ ^ self ].
 	scope first = $# ifFalse: [ ^ aBlock cull: scope cull: '' ].
 	^ (RBParser parseExpression: scope) value
@@ -118,6 +127,11 @@ LePharoBPatternLiteralSnippet >> filterDescriptorNamesAndValuesDo: aBlock [
 
 { #category : 'scope' }
 LePharoBPatternLiteralSnippet >> filterDescriptorsUsing: snippetContext [
+	"Answer the filter descriptors offered by the ""Search in:"" row: GT's global descriptors
+	 and, in front of them, the snippet context's `self` object (as a filter when it is one,
+	 else its class's methods) and the snippet's variables that are unbound or hold search
+	 filters."
+
 	| variableBindings descriptors variables |
 	descriptors := GtSearchFilter globalFilterDescriptors.
 	(snippetContext notNil and: [ snippetContext hasSelfObject ])

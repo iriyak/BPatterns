@@ -13,11 +13,17 @@ BPattern >> executeSearchInFilter: aFilter [
 
 { #category : '*BPatterns-GToolkit-Extensions' }
 BPattern class >> fromBlock: definitionBlock [
+	"Answer a BPattern for the pattern written as definitionBlock (`[ ... ]`), taken from the
+	 block's source."
+
 	^ self fromBlockAST: definitionBlock sourceNode
 ]
 
 { #category : '*BPatterns-GToolkit-Extensions' }
 BPattern class >> fromBlockAST: definitionAST [
+	"Answer a BPattern from a block's AST: a single statement without temporaries is the
+	 pattern itself; otherwise the whole block body is, as a sequence."
+
 	| patternAST |
 	patternAST := (definitionAST statements size == 1 and: [ definitionAST temporaries isEmpty ])
 		ifTrue: [ definitionAST statements first ]
@@ -91,21 +97,32 @@ BPattern >> potentialMethodsInFilter: aFilter [
 
 { #category : '*BPatterns-GToolkit-Extensions' }
 BPattern >> uniqueUsers [
+	"Like #users, but de-duplicated by origin: a method composed into many classes from one
+	 Trait is answered once, as the Trait's own method (see #uniqueMethodsFrom:)."
+
 	^ self uniqueMethodsFrom: self users
 ]
 
 { #category : '*BPatterns-GToolkit-Extensions' }
 BPattern >> uniqueUsersInClass: aClass [
+	"Like #usersInClass:, but de-duplicated by origin (see #uniqueUsers)."
+
 	^ self uniqueMethodsFrom: (self usersInClass: aClass)
 ]
 
 { #category : '*BPatterns-GToolkit-Extensions' }
 BPattern >> users [
+	"Answer every method in the image that matches the pattern, found through GT's
+	 search-filter framework: one result per distinct <methodClass, selector> pair, so
+	 Trait-composed copies count separately (see #uniqueUsers)."
+
 	^ (GtSearchBPatternFilter bpattern: self) contents
 ]
 
 { #category : '*BPatterns-GToolkit-Extensions' }
 BPattern >> usersInClass: aClass [
+	"Answer the matching methods of aClass and of its metaclass only."
+
 	| scope |
 	scope := (GtSearchMethodsInClassFilter forClass: aClass)
 		| (GtSearchMethodsInClassFilter forClass: aClass class).
