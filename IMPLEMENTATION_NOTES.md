@@ -17,7 +17,8 @@ This fork was adapted to run on GT, and adds GT-specific tooling around the same
 
 ## New GT views and tools
 
-- `BPattern` gets two new inspector tabs, **Metrics** and **SearchPattern**, and a **Search** button (`#gtSearchActionFor:`) that spawns the `GtSearchBPatternFilter` for the pattern over all methods. `BPatternRewrite` gets a **Search** button (on its search pattern) and a **Rewrite** button (`#gtRewriteActionFor:`) that spawns the async rewrite preview — the same calls as the buttons of the two Lepiter snippets below, minus their "Search in:" scope.
+- `BPattern` gets two new inspector tabs, **SearchPattern** (the pattern's AST as a tree) and **Metrics**, and a **Search** button (`#gtSearchActionFor:`) that spawns the `GtSearchBPatternFilter` for the pattern over all methods.
+- `BPatternRewrite` gets three inspector tabs: **SearchPattern** and **RewritePattern** (the AST of each side as a tree, the same view as `BPattern`'s) and **Metrics** (computed for the search pattern, since only that side is matched). It also gets a **Search** button (on its search pattern) and a **Rewrite** button (`#gtRewriteActionFor:`) that spawns the async rewrite preview. The buttons make the same calls as those of the two Lepiter snippets below, minus their "Search in:" scope.
 - `GtSearchBPatternFilter` — a `GtSearchMethodsFilter` that lets a `BPattern` be composed into GT's search/scope pipeline (`&`, `|`, class/package scoping, etc.), with AST-match highlighting via `GtBPatternHighlighter`.
 - `BlockClosure >> #gtBPatternMatches` — a one-line entry point that turns a pattern block straight into a live, spawnable `GtSearchBPatternFilter` object in GT.
 - Two experimental Lepiter snippets, kept side by side for comparison:
