@@ -22,3 +22,32 @@ BPatternRewrite >> executeRewriteInFilter: aFilter [
 		do: [ :each | (model classFor: each methodClass) compileTree: (self rewriteMethod: each) ])
 		then: [ :ignored | model ]
 ]
+
+{ #category : '*BPatterns-GToolkit-Extensions' }
+BPatternRewrite >> gtRewriteActionFor: anAction [
+	"Inspector button: spawn the async rewrite (a TAsyncFuture of an RBNamespace with the
+	 rewritten methods) over all methods, as a preview - nothing is applied to the image.
+	 Same call as the snippets' Rewrite button."
+
+	<gtAction>
+	^ anAction button
+		priority: 20;
+		label: 'Rewrite';
+		tooltip: 'Rewrite all matching methods (preview the changes)';
+		action: [ :aButton |
+			aButton phlow spawnFuture: (self executeRewriteInFilter: nil) ]
+]
+
+{ #category : '*BPatterns-GToolkit-Extensions' }
+BPatternRewrite >> gtSearchActionFor: anAction [
+	"Inspector button: spawn the GtSearchBPatternFilter for my search pattern, searching all
+	 methods. Same call as the snippets' Search button."
+
+	<gtAction>
+	^ anAction button
+		priority: 10;
+		label: 'Search';
+		tooltip: 'Search all methods for the search pattern';
+		action: [ :aButton |
+			aButton phlow spawnObject: (self searchPattern executeSearchInFilter: nil) ]
+]

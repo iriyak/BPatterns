@@ -32,31 +32,36 @@ BPattern class >> fromBlockAST: definitionAST [
 ]
 
 { #category : '*BPatterns-GToolkit-Extensions' }
-BPattern >> gtMatchesFor: aView [
-	<gtView>
-	^ aView forward
-		title: 'Matches';
-		priority: 30;
-		object: [ GtSearchBPatternFilter bpattern: self ];
-		view: #gtItemsFor:
-]
-
-{ #category : '*BPatterns-GToolkit-Extensions' }
 BPattern >> gtMetricsFor: aView [
 	<gtView>
 	^ aView forward
 		title: 'Metrics';
-		priority: 40;
+		priority: 30;
 		object: [ GtSearchBPatternFilter bpattern: self ];
 		view: #gtMetricsFor:
 ]
 
 { #category : '*BPatterns-GToolkit-Extensions' }
-BPattern >> gtPatternASTFor: aView [
+BPattern >> gtSearchActionFor: anAction [
+	"Inspector button: spawn the GtSearchBPatternFilter for this pattern, searching all methods
+	 (the inspector has no scope row, unlike the Lepiter snippets). Same call as the
+	 snippets' Search button."
+
+	<gtAction>
+	^ anAction button
+		priority: 10;
+		label: 'Search';
+		tooltip: 'Search all methods for this pattern';
+		action: [ :aButton |
+			aButton phlow spawnObject: (self executeSearchInFilter: nil) ]
+]
+
+{ #category : '*BPatterns-GToolkit-Extensions' }
+BPattern >> gtSearchPatternFor: aView [
 	<gtView>
 	^ aView forward
-		title: 'PatternAST';
-		priority: 50;
+		title: 'SearchPattern';
+		priority: 10;
 		object: [ self patternAST ];
 		view: #gtTreeFor:
 ]
