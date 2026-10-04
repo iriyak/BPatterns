@@ -23,11 +23,11 @@ Once the project is loaded via Iceberg, register it with your Lepiter database a
 
 This repository ships a Lepiter database under `lepiter/` with one page, **Getting started with BPatterns in GT**: runnable examples of building a `BPattern`/`BPatternRewrite`, searching and rewriting programmatically, and using the BPattern (code) snippet. 
 
-## API
+## API and Additions
 
 This fork keeps the original `BPattern`/`BPatternRewrite` API intact and adds:
 
-- `BPattern >> #uniqueUsers` / `#uniqueUsersInClass:` and `#users` / `#usersInClass:` — search for methods matching the pattern.
+- `BPattern >> #uniqueUsers` / `#uniqueUsersInClass:` in addition to `#users` / `#usersInClass:` — search for methods matching the pattern.
 - `BPattern >> #executeSearchInFilter:` / `#potentialMethodsInFilter:` and `BPatternRewrite >> #executeRewriteInFilter:` — async, GT-search-scope-integrated search/rewrite (Trait-composed copies of a method are reported once, as in `#uniqueUsers`).
 - `GtSearchBPatternFilter` and `BlockClosure >> #gtBPatternMatches` — compose a pattern into GT's search/scope pipeline.
 - Two Lepiter snippets for interactive search/rewrite: `LePharoBPatternLiteralSnippet` and `LePharoBPatternSnippet`.
