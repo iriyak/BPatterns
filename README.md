@@ -6,6 +6,8 @@ For the full description of BPatterns itself (what a `BPattern` is, pattern conf
 
 ## Installation
 
+Load it into a Glamorous Toolkit image: the default group includes `BPatterns-GToolkit-Extensions`, which depends on GT.
+
 ```Smalltalk
 Metacello new
   baseline: 'BPatterns';
@@ -13,7 +15,7 @@ Metacello new
   load
 ```
 
-Once the project is loaded via Iceberg, register it with your Lepiter database and open the page from GT's Lepiter browser:
+Once the project is loaded into Iceberg as `BPatterns` (`loadLepiter` looks the repository up by that name), register its `lepiter/` database with your Lepiter database and open the page from GT's Lepiter browser:
 
 ```Smalltalk
 #BaselineOfBPatterns asClass loadLepiter
@@ -21,7 +23,7 @@ Once the project is loaded via Iceberg, register it with your Lepiter database a
 
 ## Getting Started
 
-This repository ships a Lepiter database under `lepiter/` with one page, **Getting started with BPatterns in GT**: runnable examples of building a `BPattern`/`BPatternRewrite`, searching and rewriting programmatically, and using the BPattern (code) snippet. 
+This repository ships a Lepiter database under `lepiter/` with one page, **Getting started with BPatterns in GT**: runnable examples of building a `BPattern`/`BPatternRewrite`, searching and rewriting programmatically, and using the BPattern (code) snippet.
 
 ## API and Additions
 
@@ -30,7 +32,7 @@ This fork keeps the original `BPattern`/`BPatternRewrite` API intact and adds:
 - `BPattern >> #uniqueUsers` / `#uniqueUsersInClass:` in addition to `#users` / `#usersInClass:` — search for methods matching the pattern.
 - `BPattern >> #executeSearchInFilter:` / `#potentialMethodsInFilter:` and `BPatternRewrite >> #executeRewriteInFilter:` — async, GT-search-scope-integrated search/rewrite (Trait-composed copies of a method are reported once, as in `#uniqueUsers`).
 - `GtSearchBPatternFilter` and `BlockClosure >> #gtBPatternMatches` — compose a pattern into GT's search/scope pipeline.
-- Two Lepiter snippets for interactive search/rewrite: `LePharoBPatternLiteralSnippet` and `LePharoBPatternSnippet`.
+- Two Lepiter snippets for interactive search/rewrite: **BPattern (code)** (`LePharoBPatternSnippet`) and **BPattern (literal)** (`LePharoBPatternLiteralSnippet`, currently hidden from the insert menus).
 - Inspector additions: `BPattern` gets **SearchPattern** and **Metrics** tabs and a **Search** button; `BPatternRewrite` gets **SearchPattern**, **RewritePattern** and **Metrics** tabs and **Search** and **Rewrite** buttons (the buttons do the same as the Lepiter snippets' buttons, over all methods).
 
 See [Implementation notes](IMPLEMENTATION_NOTES.md) for how and why each of these was added, including a breaking change to the underlying AST classes. 
