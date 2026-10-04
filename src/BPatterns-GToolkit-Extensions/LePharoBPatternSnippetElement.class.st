@@ -83,7 +83,7 @@ LePharoBPatternSnippetElement >> initialize [
 		aptitude: (BrGlamorousLabelAptitude new glamorousRegularSmallSize
 			foreground: BrGlamorousColors textMarkupColor);
 		margin: (BlInsets top: 5 right: 5);
-		text: 'BPattern (eval)'.
+		text: 'BPattern (code)'.
 	bpatternLabel constraintsDo: [ :c |
 		c frame horizontal alignRight.
 		c frame vertical alignTop ].
