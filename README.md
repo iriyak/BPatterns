@@ -13,15 +13,6 @@ Metacello new
   load
 ```
 
-To load only the core (without the GT integration or Lepiter snippet packages), load the `'Core'`/`'CoreTests'` groups explicitly:
-
-```Smalltalk
-Metacello new
-  baseline: 'BPatterns';
-  repository: 'github://iriyak/BPatterns:main';
-  load: #('Core' 'CoreTests')
-```
-
 This repository also ships a Lepiter database under `lepiter/` with one page, **Getting started with BPatterns in GT**: runnable examples of building a `BPattern`/`BPatternRewrite`, searching and rewriting programmatically, and using the BPattern (code) snippet (see [Implementation notes](IMPLEMENTATION_NOTES.md)). Once the project is loaded via Iceberg, register it with your Lepiter database and open the page from GT's Lepiter browser:
 
 ```Smalltalk
