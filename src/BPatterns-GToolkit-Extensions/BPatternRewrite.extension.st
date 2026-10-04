@@ -24,6 +24,19 @@ BPatternRewrite >> executeRewriteInFilter: aFilter [
 ]
 
 { #category : '*BPatterns-GToolkit-Extensions' }
+BPatternRewrite >> gtMetricsFor: aView [
+	"Same view as BPattern>>#gtMetricsFor:, for my search pattern (the one that decides what
+	 gets matched, and so rewritten)."
+
+	<gtView>
+	^ aView forward
+		title: 'Metrics';
+		priority: 30;
+		object: [ GtSearchBPatternFilter bpattern: searchPattern ];
+		view: #gtMetricsFor:
+]
+
+{ #category : '*BPatterns-GToolkit-Extensions' }
 BPatternRewrite >> gtRewriteActionFor: anAction [
 	"Inspector button: spawn the async rewrite (a TAsyncFuture of an RBNamespace with the
 	 rewritten methods) over all methods, as a preview - nothing is applied to the image.
@@ -39,6 +52,18 @@ BPatternRewrite >> gtRewriteActionFor: anAction [
 ]
 
 { #category : '*BPatterns-GToolkit-Extensions' }
+BPatternRewrite >> gtRewritePatternFor: aView [
+	"The AST of my rewrite (replace) pattern, shown like the search pattern."
+
+	<gtView>
+	^ aView forward
+		title: 'RewritePattern';
+		priority: 20;
+		object: [ rewritePattern patternAST ];
+		view: #gtTreeFor:
+]
+
+{ #category : '*BPatterns-GToolkit-Extensions' }
 BPatternRewrite >> gtSearchActionFor: anAction [
 	"Inspector button: spawn the GtSearchBPatternFilter for my search pattern, searching all
 	 methods. Same call as the snippets' Search button."
@@ -50,4 +75,16 @@ BPatternRewrite >> gtSearchActionFor: anAction [
 		tooltip: 'Search all methods for the search pattern';
 		action: [ :aButton |
 			aButton phlow spawnObject: (self searchPattern executeSearchInFilter: nil) ]
+]
+
+{ #category : '*BPatterns-GToolkit-Extensions' }
+BPatternRewrite >> gtSearchPatternFor: aView [
+	"Same view as BPattern>>#gtSearchPatternFor:, on my search pattern."
+
+	<gtView>
+	^ aView forward
+		title: 'SearchPattern';
+		priority: 10;
+		object: [ searchPattern patternAST ];
+		view: #gtTreeFor:
 ]
