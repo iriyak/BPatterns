@@ -33,7 +33,7 @@ This repository also ships a Lepiter booklet under `lepiter/` (development notes
 This fork keeps the original `BPattern`/`BPatternRewrite` API intact and adds:
 
 - `BPattern >> #uniqueUsers` / `#uniqueUsersInClass:` and `#users` / `#usersInClass:` — search for methods matching the pattern.
-- `BPattern >> #executeSearchInFilter:` / `#potentialMethodsInFilter:` and `BPatternRewrite >> #executeRewriteInFilter:` — async, GT-search-scope-integrated search/rewrite.
+- `BPattern >> #executeSearchInFilter:` / `#potentialMethodsInFilter:` and `BPatternRewrite >> #executeRewriteInFilter:` — async, GT-search-scope-integrated search/rewrite (Trait-composed copies of a method are reported once, as in `#uniqueUsers`).
 - `GtSearchBPatternFilter` and `BlockClosure >> #gtBPatternMatches` — compose a pattern into GT's search/scope pipeline.
 - Two Lepiter snippets for interactive search/rewrite: `LePharoBPatternLiteralSnippet` and `LePharoBPatternSnippet`.
 - Inspector additions: `BPattern` gets **SearchPattern** and **Metrics** tabs and a **Search** button; `BPatternRewrite` gets **SearchPattern**, **RewritePattern** and **Metrics** tabs and **Search** and **Rewrite** buttons (the buttons do the same as the Lepiter snippets' buttons, over all methods).
