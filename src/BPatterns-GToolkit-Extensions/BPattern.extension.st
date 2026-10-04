@@ -39,7 +39,7 @@ BPattern >> gtMetricsFor: aView [
 	^ aView forward
 		title: 'Metrics';
 		priority: 30;
-		object: [ GtSearchBPatternFilter bpattern: self ];
+		object: [ self executeSearchInFilter: nil ];
 		view: #gtMetricsFor:
 ]
 
