@@ -587,7 +587,7 @@
 								"uidString" : "800VsWFaJEiWUXXz5R5HpQ=="
 							},
 							"code" : "[ anyRcv isNil ifTrue: anyBlock ] bpattern",
-							"scope" : "#(#('scope' '') )"
+							"scope" : "#(#('All Methods' '') )"
 						}
 					]
 				},
