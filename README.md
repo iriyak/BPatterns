@@ -23,7 +23,14 @@ Register the `lepiter/` database with your Lepiter database and open the page fr
 
 ## Getting Started
 
-This repository ships a Lepiter database under `lepiter/` with one page, **Getting started with BPatterns in GT**: runnable examples of building a `BPattern`/`BPatternRewrite`, searching and rewriting programmatically, and using the BPattern (code) snippet.
+Evaluate the snippet below to look up **Getting started with BPatterns in GT**, a page of runnable examples showing how to build a `BPattern`/`BPatternRewrite`, search and rewrite programmatically, and use the BPattern (code) snippet.
+
+```Smalltalk
+aDatabaseName := 'iriyak/BPatterns/lepiter'.
+aDatabase := LeDatabasesRegistry defaultLogicalDatabase databases
+		detect: [ :each | (each databaseName copyReplaceAll: '\' with: '/') = aDatabaseName ].
+aPage := aDatabase pageNamed: 'Getting started with BPatterns in GT'
+```
 
 ## API and Additions
 
